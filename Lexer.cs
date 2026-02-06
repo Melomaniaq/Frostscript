@@ -30,6 +30,14 @@ namespace Frostscript
                                 line, character + label.Length
                             )),
 
+                        var x when char.IsNumber(x) =>
+                            new string([.. script.TakeWhile(x => char.IsNumber(x) || x == '.')])
+                            .Pipe(number => Generate(
+                                [.. tokens.Append(new Token(TokenType.Literal, line, character, Decimal.Parse(number)))],
+                                new string([.. script.Skip(number.Length)]),
+                                line, character + number.Length
+                            )),
+
                         _ => throw new NotImplementedException()
 
                     };

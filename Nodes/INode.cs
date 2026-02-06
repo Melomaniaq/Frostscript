@@ -4,7 +4,5 @@ using System.Text;
 
 namespace Frostscript.Nodes
 {
-    public interface INode
-    {
-    }
+    public interface INode { }
 }
