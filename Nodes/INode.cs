@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript
+namespace Frostscript.Nodes
 {
     public interface INode
     {

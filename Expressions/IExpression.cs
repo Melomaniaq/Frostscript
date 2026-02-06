@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Frostscript.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript
+namespace Frostscript.Expressions
 {
     internal interface IExpression
     {
