@@ -7,12 +7,12 @@ namespace Frostscript
         internal static Token[] Lex(string script)
         {
 
-            Token[] Generate(Token[] tokens, string script, int line, int character)
+            Token[] Generate(Token[] tokens, char[] script, int line, int character)
             {
                 Token[] Add(TokenType type, int tokensRead = 1, dynamic? literal = null) => 
                     Generate(
                         [.. tokens.Append(new Token(type, line, character, literal))],
-                        new string([.. script.Skip(tokensRead)]),
+                        [.. script.Skip(tokensRead)],
                         line, character
                     );
 
@@ -26,7 +26,7 @@ namespace Frostscript
                         '/' => Add(TokenType.ForwardSlash),
                         '*' => Add(TokenType.Star),
 
-                        ' ' => Generate(tokens, new string([.. script.Skip(1)]), line, character + 1),
+                        ' ' => Generate(tokens, [.. script.Skip(1)], line, character + 1),
 
                         '"' => new string([.. script.Skip(1).TakeWhile(x => x != '"')])
                             .Pipe(@string => Add(TokenType.Literal, @string.Length + 2, @string)),
@@ -44,7 +44,7 @@ namespace Frostscript
                     };
             }
 
-            return Generate([], script, 0, 0);
+            return Generate([], [.. script], 0, 0);
         }
     }
 }
