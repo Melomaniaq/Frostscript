@@ -1,6 +1,5 @@
 ﻿using Frostscript.Expressions;
 using Frostscript.Nodes;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace Frostscript.Tests

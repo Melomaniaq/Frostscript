@@ -17,12 +17,16 @@ namespace Frostscript.Tests
             Assert.Equal("Hello", Interpreter.Interpret<string>(nodes, expression));
         }
 
-        [Fact]
-        public void Binary()
+        [Theory]
+        [InlineData(BinaryType.Addition, TokenType.Plus, 6)]
+        [InlineData(BinaryType.Subtraction, TokenType.Minus, 2)]
+        [InlineData(BinaryType.Devision, TokenType.ForwardSlash, 2)]
+        [InlineData(BinaryType.Multiplication, TokenType.Star, 8)]
+        internal void Binary(BinaryType type, TokenType @operator, int expected)
         {
-            INode[] nodes = [new BinaryNode(BinaryType.Addition, new LiteralNode(1), new LiteralNode(2))];
-            var expression = new Binary([TokenType.Plus], new Literal(new Error()));
-            Assert.Equal(3, Interpreter.Interpret<int>(nodes, expression));
+            INode[] nodes = [new BinaryNode(type, new LiteralNode(4), new LiteralNode(2))];
+            var expression = new Binary([@operator], new Literal(new Error()));
+            Assert.Equal(expected, Interpreter.Interpret<int>(nodes, expression));
         }
     }
 }
