@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Frostscript.Tests/Frostscript.Tests.csproj" />
+  <Project Path="Frostscript/Frostscript.csproj" />
+</Solution>
