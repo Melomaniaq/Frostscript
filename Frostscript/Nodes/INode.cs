@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Frostscript.Nodes
 {
-    internal record struct ErrorNode(string Error) : INode; 
+    public interface INode { }
 }

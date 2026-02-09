@@ -12,7 +12,7 @@ namespace Frostscript
         internal static T Interpret<T>(INode[] ast, IExpression expressions)
         {
             return ast
-                .Select(x => expressions.Interpret(x))
+                .Select(x => (T)expressions.Interpret(x))
                 .Last();
         }
     }
