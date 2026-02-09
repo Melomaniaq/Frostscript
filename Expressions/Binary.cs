@@ -7,7 +7,6 @@ namespace Frostscript.Expressions
 {
     internal class Binary(TokenType[] types, IExpression next) : IExpression
     {
-
         public (INode, Token[]) Parse(INode node, Token[] tokens)
         {
             var (left, tokensAfterLeft) = next.Parse(node, tokens);
