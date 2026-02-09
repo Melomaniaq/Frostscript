@@ -18,13 +18,13 @@ namespace Frostscript.Tests
         }
 
         [Theory]
-        [InlineData(BinaryType.Addition, TokenType.Plus, 6)]
-        [InlineData(BinaryType.Subtraction, TokenType.Minus, 2)]
-        [InlineData(BinaryType.Devision, TokenType.ForwardSlash, 2)]
-        [InlineData(BinaryType.Multiplication, TokenType.Star, 8)]
+        [InlineData(BinaryType.Addition, TokenType.Plus, 10)]
+        [InlineData(BinaryType.Subtraction, TokenType.Minus, 6)]
+        [InlineData(BinaryType.Devision, TokenType.ForwardSlash, 4)]
+        [InlineData(BinaryType.Multiplication, TokenType.Star, 16)]
         internal void Binary(BinaryType type, TokenType @operator, int expected)
         {
-            INode[] nodes = [new BinaryNode(type, new LiteralNode(4), new LiteralNode(2))];
+            INode[] nodes = [new BinaryNode(type, new LiteralNode(8), new LiteralNode(2))];
             var expression = new Binary([@operator], new Literal(new Error()));
             Assert.Equal(expected, Interpreter.Interpret<int>(nodes, expression));
         }
