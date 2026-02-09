@@ -13,7 +13,7 @@ namespace Frostscript.Tests
         public void LiteralString()
         {
             INode[] nodes = [new LiteralNode("Hello")];
-            var expression = new Literal(new Error());
+            var expression = new Literal();
             Assert.Equal("Hello", Interpreter.Interpret<string>(nodes, expression));
         }
 
@@ -25,7 +25,7 @@ namespace Frostscript.Tests
         internal void Binary(BinaryType type, TokenType @operator, int expected)
         {
             INode[] nodes = [new BinaryNode(type, new LiteralNode(8), new LiteralNode(2))];
-            var expression = new Binary([@operator], new Literal(new Error()));
+            var expression = new Binary([@operator], new Literal());
             Assert.Equal(expected, Interpreter.Interpret<int>(nodes, expression));
         }
     }

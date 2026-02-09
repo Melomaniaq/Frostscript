@@ -10,9 +10,7 @@ namespace Frostscript.Expressions
         private static readonly IExpression expressions = 
             new Binary([TokenType.Plus, TokenType.Minus], 
                 new Binary([TokenType.ForwardSlash, TokenType.Star], 
-                    new Literal(
-                        new Error()
-                    )
+                    new Literal()
                 )
             );
         public static IExpression Expressions => expressions;
