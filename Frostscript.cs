@@ -1,4 +1,5 @@
 ﻿using Frostscript.Expressions;
+using Frostware.Pipe;
 
 namespace Frostscript
 {
@@ -6,7 +7,9 @@ namespace Frostscript
     {
         public static T Run<T>(string frostscript)
         {
-            return Interpreter.Interpret<T>(Parser.Parse(Lexer.Lex(frostscript), Expression.Expressions), Expression.Expressions);
+            return Lexer.Lex(frostscript)
+                .Pipe(tokens => Parser.Parse(tokens, Expression.Expressions))
+                .Pipe(nodes => Interpreter.Interpret<T>(nodes, Expression.Expressions));
         }
     }
 }
