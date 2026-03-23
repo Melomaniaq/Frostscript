@@ -23,6 +23,10 @@ namespace Frostscript.Tests
         [InlineData(TokenType.ForwardSlash, BinaryType.Devision)]
         [InlineData(TokenType.DoubleEqual, BinaryType.Equality)]
         [InlineData(TokenType.NotEqual, BinaryType.Inequality)]
+        [InlineData(TokenType.GreaterThan, BinaryType.GreaterThan)]
+        [InlineData(TokenType.GreaterOrEqual, BinaryType.GreaterOrEqual)]
+        [InlineData(TokenType.LessThan, BinaryType.LessThan)]
+        [InlineData(TokenType.LessOrEqual, BinaryType.LessOrEqual)]
         internal void BinaryAddition(TokenType @operator, BinaryType type)
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1), new Token(@operator, 0, 2), new Token(TokenType.Literal, 0, 4, 2)];

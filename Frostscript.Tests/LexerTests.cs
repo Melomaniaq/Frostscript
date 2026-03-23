@@ -31,7 +31,10 @@ namespace Frostscript.Tests
         [InlineData("!", TokenType.Not)]
         [InlineData("!=", TokenType.NotEqual)]
         [InlineData("==", TokenType.DoubleEqual)]
-        [InlineData("=", TokenType.SingleEqual)]
+        [InlineData(">", TokenType.GreaterThan)]
+        [InlineData(">=", TokenType.GreaterOrEqual)]
+        [InlineData("<", TokenType.LessThan)]
+        [InlineData("<=", TokenType.LessOrEqual)]
         internal void Operators(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
     }
 }

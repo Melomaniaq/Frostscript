@@ -15,6 +15,10 @@ namespace Frostscript.Expressions
             { BinaryType.Devision, TokenType.ForwardSlash }, 
             { BinaryType.Equality, TokenType.DoubleEqual }, 
             { BinaryType.Inequality, TokenType.NotEqual }, 
+            { BinaryType.GreaterThan, TokenType.GreaterThan }, 
+            { BinaryType.GreaterOrEqual, TokenType.GreaterOrEqual }, 
+            { BinaryType.LessThan, TokenType.LessThan }, 
+            { BinaryType.LessOrEqual, TokenType.LessOrEqual }, 
         };
         public (INode, Token[]) Parse(INode node, Token[] tokens)
         {
@@ -44,6 +48,10 @@ namespace Frostscript.Expressions
                     BinaryType.Devision => left / right,
                     BinaryType.Equality => left == right,
                     BinaryType.Inequality => left != right,
+                    BinaryType.GreaterThan => left > right,
+                    BinaryType.GreaterOrEqual => left >= right,
+                    BinaryType.LessThan => left < right,
+                    BinaryType.LessOrEqual => left <= right,
                 };
             }
             else return next.Interpret(node);

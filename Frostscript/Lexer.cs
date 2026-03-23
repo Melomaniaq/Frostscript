@@ -37,6 +37,18 @@ namespace Frostscript
                             _ => Add(TokenType.Not)
                         },
 
+                        '>' => script[1] switch
+                        {
+                            '=' => Add(TokenType.GreaterOrEqual, 2),
+                            _ => Add(TokenType.GreaterThan)
+                        },
+
+                        '<' => script[1] switch
+                        {
+                            '=' => Add(TokenType.LessOrEqual, 2),
+                            _ => Add(TokenType.LessThan)
+                        },
+
                         '"' => new string([.. script.Skip(1).TakeWhile(x => x != '"')])
                             .Pipe(@string => Add(TokenType.Literal, @string.Length + 2, @string)),
 

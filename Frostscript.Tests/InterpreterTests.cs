@@ -22,10 +22,28 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.Subtraction, 1, 2, -1])]
         [InlineData([BinaryType.Multiplication, 2, 3, 6])]
         [InlineData([BinaryType.Devision, 6, 3, 2])]
+
         [InlineData([BinaryType.Equality, 1, 1, true])]
         [InlineData([BinaryType.Equality, 1, 2, false])]
+
         [InlineData([BinaryType.Inequality, 1, 1, false])]
         [InlineData([BinaryType.Inequality, 1, 2, true])]
+
+        [InlineData([BinaryType.GreaterThan, 1, 2, false])]
+        [InlineData([BinaryType.GreaterThan, 2, 1, true])]
+        [InlineData([BinaryType.GreaterThan, 1, 1, false])]
+
+        [InlineData([BinaryType.GreaterOrEqual, 1, 2, false])]
+        [InlineData([BinaryType.GreaterOrEqual, 2, 1, true])]
+        [InlineData([BinaryType.GreaterOrEqual, 1, 1, true])]
+
+        [InlineData([BinaryType.LessThan, 1, 2, true])]
+        [InlineData([BinaryType.LessThan, 2, 1, false])]
+        [InlineData([BinaryType.LessThan, 1, 1, false])]
+
+        [InlineData([BinaryType.LessOrEqual, 1, 2, true])]
+        [InlineData([BinaryType.LessOrEqual, 2, 1, false])]
+        [InlineData([BinaryType.LessOrEqual, 1, 1, true])]
         internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
             INode[] nodes = [new BinaryNode(type, new LiteralNode(left), new LiteralNode(right))];
