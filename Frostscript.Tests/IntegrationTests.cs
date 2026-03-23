@@ -16,14 +16,12 @@ namespace Frostscript.Tests
         }
 
         [Theory]
-        [InlineData("1 + 2", 3)]
-        [InlineData("1 - 2", -1)]
-        [InlineData("1 * 2", 2)]
-        [InlineData("4 / 2", 2)]
         [InlineData("2 + 4 * 2", 10)]
-        public void Binary(string script, int expected)
+        [InlineData("2 + 2 == 1 * 4", true)]
+        [InlineData("2 + 2 != 1 * 4", false)]
+        public void Precedence(string script, dynamic expected)
         {
-            Assert.Equal(expected, Frostscript.Run<int>(script));
+            Assert.Equal(expected, Frostscript.Run<dynamic>(script));
         }
     }
 }
