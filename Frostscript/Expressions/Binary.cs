@@ -21,7 +21,9 @@ namespace Frostscript.Expressions
                     TokenType.Plus => BinaryType.Addition,
                     TokenType.Minus => BinaryType.Subtraction,
                     TokenType.Star => BinaryType.Multiplication,
-                    TokenType.ForwardSlash => BinaryType.Devision
+                    TokenType.ForwardSlash => BinaryType.Devision,
+                    TokenType.DoubleEqual => BinaryType.Equality,
+                    TokenType.NotEqual => BinaryType.Inequality
                 };
                 return (new BinaryNode(operatorType, left, right), tokensAfterRight);
             }

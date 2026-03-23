@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Frostscript.Nodes
 {
-    internal enum BinaryType { Addition, Subtraction, Multiplication, Devision }
+    internal enum BinaryType { Addition, Subtraction, Multiplication, Devision, Equality, Inequality }
     internal record struct BinaryNode(BinaryType Type, INode Left, INode Right) : INode;
     internal record struct ErrorNode(string Error) : INode;
     internal record struct LiteralNode(dynamic Value) : INode;
