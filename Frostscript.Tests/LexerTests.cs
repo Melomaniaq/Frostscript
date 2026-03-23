@@ -22,5 +22,16 @@ namespace Frostscript.Tests
         
         [Fact]
         public void Label() => Assert.Equal([new Token(TokenType.Label, 0, 0, "Hello")], Lexer.Lex(@"Hello"));
+
+        [Theory]
+        [InlineData("+", TokenType.Plus)]
+        [InlineData("-", TokenType.Minus)]
+        [InlineData("/", TokenType.ForwardSlash)]
+        [InlineData("*", TokenType.Star)]
+        [InlineData("!", TokenType.Not)]
+        [InlineData("!=", TokenType.NotEqual)]
+        [InlineData("==", TokenType.DoubleEqual)]
+        [InlineData("=", TokenType.SingleEqual)]
+        internal void Operators(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
     }
 }

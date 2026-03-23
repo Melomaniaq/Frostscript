@@ -6,7 +6,6 @@ namespace Frostscript
     {
         internal static Token[] Lex(string script)
         {
-
             Token[] Generate(Token[] tokens, char[] script, int line, int character)
             {
                 Token[] Add(TokenType type, int tokensRead = 1, dynamic? literal = null) => 
@@ -26,7 +25,17 @@ namespace Frostscript
                         '/' => Add(TokenType.ForwardSlash),
                         '*' => Add(TokenType.Star),
 
-                        ' ' => Generate(tokens, [.. script.Skip(1)], line, character + 1),
+                        '=' => script[1] switch
+                        {
+                            '=' => Add(TokenType.DoubleEqual, 2),
+                            _ => Add(TokenType.SingleEqual)
+                        },
+
+                        '!' => script[1] switch
+                        {
+                            '=' => Add(TokenType.NotEqual, 2),
+                            _ => Add(TokenType.Not)
+                        },
 
                         '"' => new string([.. script.Skip(1).TakeWhile(x => x != '"')])
                             .Pipe(@string => Add(TokenType.Literal, @string.Length + 2, @string)),
@@ -39,12 +48,14 @@ namespace Frostscript
                             new string([.. script.TakeWhile(x => char.IsNumber(x) || x == '.')])
                             .Pipe(number => Add(TokenType.Literal, number.Length, decimal.Parse(number))),
 
+                        ' ' => Generate(tokens, [.. script.Skip(1)], line, character + 1),
+
                         _ => throw new NotImplementedException()
 
                     };
             }
 
-            return Generate([], [.. script], 0, 0);
+            return Generate([], [.. script, ' '], 0, 0);
         }
     }
 }
