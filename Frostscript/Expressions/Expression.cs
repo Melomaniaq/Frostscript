@@ -14,7 +14,7 @@ namespace Frostscript.Expressions
             new Binary(BinaryType.Subtraction,
             new Binary(BinaryType.Devision,
             new Binary(BinaryType.Multiplication,
-            new Literal(new Error())))))));
+            new Literal()))))));
 
         public static IExpression Expressions => expressions;
     }

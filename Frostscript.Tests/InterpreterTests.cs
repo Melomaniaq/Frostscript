@@ -29,7 +29,7 @@ namespace Frostscript.Tests
         internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
             INode[] nodes = [new BinaryNode(type, new LiteralNode(left), new LiteralNode(right))];
-            var expression = new Binary(type, new Literal(new Error()));
+            var expression = new Binary(type, new Literal());
             Assert.Equal(result, Interpreter.Interpret<dynamic>(nodes, expression));
         }
     }
