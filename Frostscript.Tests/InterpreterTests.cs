@@ -13,7 +13,7 @@ namespace Frostscript.Tests
         public void LiteralString()
         {
             INode[] nodes = [new LiteralNode("Hello")];
-            var expression = new Literal(new Error());
+            var expression = new Literal();
             Assert.Equal("Hello", Interpreter.Interpret<string>(nodes, expression));
         }
 

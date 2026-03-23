@@ -1,6 +1,5 @@
 ﻿using Frostscript.Expressions;
 using Frostscript.Nodes;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -11,7 +10,7 @@ namespace Frostscript.Tests
         public void Literal()
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
-            var expression = new Literal(new Error());
+            var expression = new Literal();
             INode[] expected = [new LiteralNode("Hello")];
 
             Assert.Equal(expected, Parser.Parse(tokens, expression));
