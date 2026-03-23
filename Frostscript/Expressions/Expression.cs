@@ -7,16 +7,15 @@ namespace Frostscript.Expressions
 {
     internal static class Expression
     {
-        private static readonly IExpression expressions = 
-            new Binary([TokenType.Plus, TokenType.Minus], 
-                new Binary([TokenType.ForwardSlash, TokenType.Star], 
-                    new Binary([TokenType.DoubleEqual, TokenType.NotEqual], 
-                        new Literal(
-                            new Error()
-                        )
-                    )
-                )
-            );
+        private static readonly IExpression expressions =
+            new Binary(BinaryType.Inequality,
+            new Binary(BinaryType.Equality,
+            new Binary(BinaryType.Addition,
+            new Binary(BinaryType.Subtraction,
+            new Binary(BinaryType.Devision,
+            new Binary(BinaryType.Multiplication,
+            new Literal(new Error())))))));
+
         public static IExpression Expressions => expressions;
     }
 }

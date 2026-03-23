@@ -5,27 +5,26 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class Binary(TokenType[] types, IExpression next) : IExpression
+    internal class Binary(BinaryType type, IExpression next) : IExpression
     {
+        readonly Dictionary<BinaryType, TokenType> operatorMap = new() 
+        { 
+            { BinaryType.Addition, TokenType.Plus }, 
+            { BinaryType.Subtraction, TokenType.Minus }, 
+            { BinaryType.Multiplication, TokenType.Star }, 
+            { BinaryType.Devision, TokenType.ForwardSlash }, 
+            { BinaryType.Equality, TokenType.DoubleEqual }, 
+            { BinaryType.Inequality, TokenType.NotEqual }, 
+        };
         public (INode, Token[]) Parse(INode node, Token[] tokens)
         {
             var (left, tokensAfterLeft) = next.Parse(node, tokens);
             if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
 
-            var @operator = tokensAfterLeft[0];
-            if (types.Contains(@operator.Type))
+            if (operatorMap[type] == tokensAfterLeft[0].Type)
             {
                 var (right, tokensAfterRight) = next.Parse(node, [.. tokensAfterLeft.Skip(1)]);
-                var operatorType = @operator.Type switch
-                {
-                    TokenType.Plus => BinaryType.Addition,
-                    TokenType.Minus => BinaryType.Subtraction,
-                    TokenType.Star => BinaryType.Multiplication,
-                    TokenType.ForwardSlash => BinaryType.Devision,
-                    TokenType.DoubleEqual => BinaryType.Equality,
-                    TokenType.NotEqual => BinaryType.Inequality
-                };
-                return (new BinaryNode(operatorType, left, right), tokensAfterRight);
+                return (new BinaryNode(type, left, right), tokensAfterRight);
             }
             else return (left, tokensAfterLeft);
 
@@ -43,6 +42,8 @@ namespace Frostscript.Expressions
                     BinaryType.Subtraction => left - right,
                     BinaryType.Multiplication => left * right,
                     BinaryType.Devision => left / right,
+                    BinaryType.Equality => left == right,
+                    BinaryType.Inequality => left != right,
                 };
             }
             else return next.Interpret(node);

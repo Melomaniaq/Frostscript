@@ -27,7 +27,7 @@ namespace Frostscript.Tests
         internal void BinaryAddition(TokenType @operator, BinaryType type)
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1), new Token(@operator, 0, 2), new Token(TokenType.Literal, 0, 4, 2)];
-            var expression = new Binary([@operator], new Literal(new Error()));
+            var expression = new Binary(type, new Literal(new Error()));
             INode[] expected = [new BinaryNode(type, new LiteralNode(1), new LiteralNode(2))];
 
             Assert.Equal(expected, Parser.Parse(tokens, expression));
@@ -37,7 +37,7 @@ namespace Frostscript.Tests
         public void BinaryPassthrough()
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1)];
-            var expression = new Binary([TokenType.Plus], new Literal(new Error()));
+            var expression = new Binary(BinaryType.Addition, new Literal(new Error()));
             INode[] expected = [new LiteralNode(1)];
 
             Assert.Equal(expected, Parser.Parse(tokens, expression));
