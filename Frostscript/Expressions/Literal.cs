@@ -7,18 +7,17 @@ namespace Frostscript.Expressions
 {
     internal class Literal : IExpression
     {
-        public dynamic Interpret(INode node)
-        {
-            if (node is LiteralNode literal) return literal.Value;
-            else throw new NotImplementedException();
-        }
-
         public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type != TokenType.Literal)
-                return (new ErrorNode($"[{tokens[0].Line}:{tokens[0].Character}]Unexpected token {tokens[0].Literal}"), tokens);
+                return (new ErrorNode($"Unexpected token {tokens[0].Literal}", tokens[0]), tokens);
 
             return (new LiteralNode(tokens[0].Literal), [.. tokens.Skip(1)]);
+        }
+        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        {
+            if (node is LiteralNode literal) return literal.Value;
+            else throw new NotImplementedException();
         }
     }
 }

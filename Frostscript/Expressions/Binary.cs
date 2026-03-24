@@ -33,12 +33,12 @@ namespace Frostscript.Expressions
             else return (left, tokensAfterLeft);
 
         }
-        public dynamic Interpret(INode node)
+        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
         {
             if (node is BinaryNode binary)
             {
-                var left = next.Interpret(binary.Left);
-                var right = next.Interpret(binary.Right);
+                var left = next.Interpret(binary.Left, variables);
+                var right = next.Interpret(binary.Right, variables);
 
                 return binary.Type switch 
                 { 
@@ -54,7 +54,7 @@ namespace Frostscript.Expressions
                     BinaryType.LessOrEqual => left <= right,
                 };
             }
-            else return next.Interpret(node);
+            else return next.Interpret(node, variables);
         }
     }
 }
