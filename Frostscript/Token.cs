@@ -2,7 +2,10 @@
 {
     internal enum TokenType { 
         Literal, 
-        Label, 
+        Label,
+        Id,
+        Let,
+        Var,
         Plus, 
         Minus, 
         ForwardSlash, 
