@@ -56,8 +56,12 @@ namespace Frostscript
                             new string([.. script.TakeWhile(x => char.IsLetter(x))])
                             .Pipe(label => label switch
                             {
-                                "let" => Add(TokenType.Let, 3),
-                                "var" => Add(TokenType.Var, 3),
+                                "let" => Add(TokenType.Let, label.Length),
+                                "and" => Add(TokenType.And, label.Length),
+                                "or" => Add(TokenType.Or, label.Length),
+                                "var" => Add(TokenType.Var, label.Length),
+                                "true" => Add(TokenType.Literal, label.Length, true),
+                                "false" => Add(TokenType.Literal, label.Length, false),
                                 _ => Add(TokenType.Label, label.Length, label),
                             }),
 

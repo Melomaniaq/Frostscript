@@ -19,7 +19,8 @@ namespace Frostscript.Expressions
             { BinaryType.GreaterOrEqual, TokenType.GreaterOrEqual }, 
             { BinaryType.LessThan, TokenType.LessThan }, 
             { BinaryType.LessOrEqual, TokenType.LessOrEqual },
-            { BinaryType.Assignment, TokenType.SingleEqual },
+            { BinaryType.And, TokenType.And },
+            { BinaryType.Or, TokenType.Or },
         };
         public (INode, Token[]) Parse(Token[] tokens)
         {
@@ -53,6 +54,8 @@ namespace Frostscript.Expressions
                     BinaryType.GreaterOrEqual => left >= right,
                     BinaryType.LessThan => left < right,
                     BinaryType.LessOrEqual => left <= right,
+                    BinaryType.And => left && right,
+                    BinaryType.Or => left || right,
                 };
             }
             else return next.Interpret(node, variables);

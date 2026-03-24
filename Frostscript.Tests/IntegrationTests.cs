@@ -22,7 +22,7 @@ namespace Frostscript.Tests
         [InlineData("2 + 2 >= 1 * 4", true)]
         [InlineData("2 + 2 > 1 * 4", false)]
         [InlineData("2 + 2 <= 1 * 4", true)]
-        [InlineData("2 + 2 < 1 * 4", false)]
+        [InlineData("true or true and false", true)]
         public void Precedence(string script, dynamic expected)
         {
             Assert.Equal(expected, Frostscript.Run<dynamic>(script));

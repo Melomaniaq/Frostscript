@@ -17,7 +17,8 @@ namespace Frostscript.Nodes
         GreaterOrEqual, 
         LessThan, 
         LessOrEqual,
-        Assignment
+        And,
+        Or
     }
     internal record struct BinaryNode(BinaryType Type, INode Left, INode Right) : INode;
     internal record struct VariableNode(string Label, INode Value, bool Mutable) : INode;

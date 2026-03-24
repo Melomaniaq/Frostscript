@@ -1,7 +1,7 @@
 ﻿namespace Frostscript
 {
     internal enum TokenType { 
-        Literal, 
+        Literal,
         Label,
         Id,
         Let,
@@ -17,7 +17,9 @@
         GreaterThan,
         GreaterOrEqual,
         LessOrEqual,
-        LessThan
+        LessThan,
+        And,
+        Or
     }
 
     internal record struct Token(TokenType Type, int Line, int Character, dynamic? Literal = null);

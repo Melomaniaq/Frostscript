@@ -44,6 +44,15 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.LessOrEqual, 1, 2, true])]
         [InlineData([BinaryType.LessOrEqual, 2, 1, false])]
         [InlineData([BinaryType.LessOrEqual, 1, 1, true])]
+
+        [InlineData([BinaryType.And, true, true, true])]
+        [InlineData([BinaryType.And, true, false, false])]
+        [InlineData([BinaryType.And, false, false, false])]
+
+        [InlineData([BinaryType.Or, true, false, true])]
+        [InlineData([BinaryType.Or, false, true, true])]
+        [InlineData([BinaryType.Or, true, true, true])]
+        [InlineData([BinaryType.Or, false, false, false])]
         internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
             var node = new BinaryNode(type, new LiteralNode(left), new LiteralNode(right));

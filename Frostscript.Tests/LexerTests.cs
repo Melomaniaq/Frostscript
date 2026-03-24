@@ -42,5 +42,17 @@ namespace Frostscript.Tests
 
         [Fact]
         public void Let() => Assert.Equal([new Token(TokenType.Let, 0, 0)], Lexer.Lex("let"));
+
+        [Fact]
+        public void And() => Assert.Equal([new Token(TokenType.And, 0, 0)], Lexer.Lex("and"));
+
+        [Fact]
+        public void Or() => Assert.Equal([new Token(TokenType.Or, 0, 0)], Lexer.Lex("or"));
+
+        [Fact]
+        public void True() => Assert.Equal([new Token(TokenType.Literal, 0, 0, true)], Lexer.Lex("true"));
+
+        [Fact]
+        public void False() => Assert.Equal([new Token(TokenType.Literal, 0, 0, false)], Lexer.Lex("false"));
     }
 }
