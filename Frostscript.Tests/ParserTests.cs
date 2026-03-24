@@ -45,5 +45,67 @@ namespace Frostscript.Tests
 
             Assert.Equal(expected, Parser.Parse(tokens, expression));
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Variable(bool mutable)
+        {
+            Token[] tokens = 
+            [
+                new Token(mutable ? TokenType.Var : TokenType.Let, 0, 0),
+                new Token(TokenType.Label, 0, 1, "myVariable"),
+                new Token(TokenType.SingleEqual, 0, 2),
+                new Token(TokenType.Literal, 0, 3, 1)
+            ];
+
+            var expression = new Variable(new Literal());
+            INode[] expected = [new VariableNode("myVariable", new LiteralNode(1), mutable)];
+
+            Assert.Equal(expected, Parser.Parse(tokens, expression));
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void VariableNoEqual(bool mutable)
+        {
+            Token[] tokens =
+            [
+                new Token(mutable ? TokenType.Var : TokenType.Let, 0, 0),
+                new Token(TokenType.Label, 0, 1, "myVariable"),
+                new Token(TokenType.Literal, 0, 3, 1)
+            ];
+
+            var expression = new Variable(new Literal());
+            Assert.IsType<ErrorNode>(Parser.Parse(tokens, expression).First());
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void VariableNoLabel(bool mutable)
+        {
+            Token[] tokens =
+            [
+                new Token(mutable ? TokenType.Var : TokenType.Let, 0, 0),
+                new Token(TokenType.SingleEqual, 0, 2),
+                new Token(TokenType.Literal, 0, 3, 1)
+            ];
+
+            var expression = new Variable(new Literal());
+            Assert.IsType<ErrorNode>(Parser.Parse(tokens, expression).First());
+        }
+
+        [Fact]
+        public void Label()
+        {
+
+            Token[] tokens = [new Token(TokenType.Label, 0, 0, "hello")];
+            var expression = new Label(new Literal());
+            INode[] expected = [new LabelNode("hello")];
+
+            Assert.Equal(expected, Parser.Parse(tokens, expression));
+        }
     }
 }

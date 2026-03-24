@@ -50,5 +50,33 @@ namespace Frostscript.Tests
             var expression = new Binary(type, new Literal());
             Assert.Equal(result, Interpreter.Interpret<dynamic>(nodes, expression));
         }
+
+        [Fact]
+        internal void VariableReturnsCorrectValue()
+        {
+            var node = new VariableNode("myVariable", new LiteralNode(1), true);
+            var expression = new Variable(new Literal());
+            Dictionary<string, INode> variables = [];
+            Assert.Equal(new Void(), expression.Interpret(node, variables));
+        }
+
+        [Fact]
+        internal void VariableAssignsNewLabel()
+        {
+            var node = new VariableNode("myVariable", new LiteralNode(1), true);
+            var expression = new Variable(new Literal());
+            Dictionary<string, INode> variables = [];
+            expression.Interpret(node, variables);
+            Assert.Equal(new LiteralNode(1), variables["myVariable"]);
+        }
+
+        [Fact]
+        internal void Label()
+        {
+            var node = new LabelNode("hello");
+            var variables = new Dictionary<string, INode>() { { "hello", new LiteralNode(1) } };
+            var expression = new Label(new Literal());
+            Assert.Equal(1, expression.Interpret(node, variables));
+        }
     }
 }

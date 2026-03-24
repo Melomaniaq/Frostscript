@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Nodes
+namespace Frostscript
 {
-    public interface INode { }
+    public struct Void;
 }

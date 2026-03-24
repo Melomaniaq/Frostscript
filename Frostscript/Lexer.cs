@@ -54,7 +54,12 @@ namespace Frostscript
 
                         var x when char.IsLetter(x) =>
                             new string([.. script.TakeWhile(x => char.IsLetter(x))])
-                            .Pipe(label => Add(TokenType.Label, label.Length, label)),
+                            .Pipe(label => label switch
+                            {
+                                "let" => Add(TokenType.Let, 3),
+                                "var" => Add(TokenType.Var, 3),
+                                _ => Add(TokenType.Label, label.Length, label),
+                            }),
 
                         var x when char.IsNumber(x) =>
                             new string([.. script.TakeWhile(x => char.IsNumber(x) || x == '.')])
