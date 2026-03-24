@@ -12,7 +12,7 @@ namespace Frostscript
             {
                 if (tokens.Length > 0)
                 {
-                    var (node, newTokens) = features.Parse(new StatementNode(), tokens);
+                    var (node, newTokens) = features.Parse(tokens);
                     return GenerateNodes([.. nodes.Append(node)], newTokens);
                 }
                 else return nodes;

@@ -7,7 +7,7 @@ namespace Frostscript.Expressions
 {
     internal interface IExpression
     {
-        public (INode, Token[]) Parse(INode node, Token[] tokens);
+        public (INode, Token[]) Parse(Token[] tokens);
         public dynamic Interpret(INode node);
     }
 }

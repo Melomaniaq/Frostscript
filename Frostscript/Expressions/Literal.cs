@@ -13,7 +13,7 @@ namespace Frostscript.Expressions
             else throw new NotImplementedException();
         }
 
-        public (INode, Token[]) Parse(INode node, Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type != TokenType.Literal)
                 return (new ErrorNode($"[{tokens[0].Line}:{tokens[0].Character}]Unexpected token {tokens[0].Literal}"), tokens);

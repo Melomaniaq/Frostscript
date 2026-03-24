@@ -20,14 +20,14 @@ namespace Frostscript.Expressions
             { BinaryType.LessThan, TokenType.LessThan }, 
             { BinaryType.LessOrEqual, TokenType.LessOrEqual }, 
         };
-        public (INode, Token[]) Parse(INode node, Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
-            var (left, tokensAfterLeft) = next.Parse(node, tokens);
+            var (left, tokensAfterLeft) = next.Parse(tokens);
             if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
 
             if (operatorMap[type] == tokensAfterLeft[0].Type)
             {
-                var (right, tokensAfterRight) = next.Parse(node, [.. tokensAfterLeft.Skip(1)]);
+                var (right, tokensAfterRight) = next.Parse([.. tokensAfterLeft.Skip(1)]);
                 return (new BinaryNode(type, left, right), tokensAfterRight);
             }
             else return (left, tokensAfterLeft);
