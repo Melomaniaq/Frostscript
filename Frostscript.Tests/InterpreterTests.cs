@@ -69,5 +69,14 @@ namespace Frostscript.Tests
             expression.Interpret(node, variables);
             Assert.Equal(new LiteralNode(1), variables["myVariable"]);
         }
+
+        [Fact]
+        internal void Label()
+        {
+            var node = new LabelNode("hello");
+            var variables = new Dictionary<string, INode>() { { "hello", new LiteralNode(1) } };
+            var expression = new Label(new Literal());
+            Assert.Equal(1, expression.Interpret(node, variables));
+        }
     }
 }

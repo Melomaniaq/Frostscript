@@ -96,5 +96,16 @@ namespace Frostscript.Tests
             var expression = new Variable(new Literal());
             Assert.IsType<ErrorNode>(Parser.Parse(tokens, expression).First());
         }
+
+        [Fact]
+        public void Label()
+        {
+
+            Token[] tokens = [new Token(TokenType.Label, 0, 0, "hello")];
+            var expression = new Label(new Literal());
+            INode[] expected = [new LabelNode("hello")];
+
+            Assert.Equal(expected, Parser.Parse(tokens, expression));
+        }
     }
 }
