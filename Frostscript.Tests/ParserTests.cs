@@ -11,9 +11,9 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
             var expression = new Literal();
-            INode[] expected = [new LiteralNode("Hello")];
+            INode expected = new LiteralNode("Hello");
 
-            Assert.Equal(expected, Parser.Parse(tokens, expression));
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
 
         [Theory]
@@ -31,9 +31,9 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1), new Token(@operator, 0, 2), new Token(TokenType.Literal, 0, 4, 2)];
             var expression = new Binary(type, new Literal());
-            INode[] expected = [new BinaryNode(type, new LiteralNode(1), new LiteralNode(2))];
+            INode expected = new BinaryNode(type, new LiteralNode(1), new LiteralNode(2));
 
-            Assert.Equal(expected, Parser.Parse(tokens, expression));
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
 
         [Fact]
@@ -41,9 +41,9 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1)];
             var expression = new Binary(BinaryType.Addition, new Literal());
-            INode[] expected = [new LiteralNode(1)];
+            INode expected = new LiteralNode(1);
 
-            Assert.Equal(expected, Parser.Parse(tokens, expression));
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
 
         [Theory]
@@ -60,9 +60,9 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Variable(new Literal());
-            INode[] expected = [new VariableNode("myVariable", new LiteralNode(1), mutable)];
+            INode expected = new VariableNode("myVariable", new LiteralNode(1), mutable);
 
-            Assert.Equal(expected, Parser.Parse(tokens, expression));
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Variable(new Literal());
-            Assert.IsType<ErrorNode>(Parser.Parse(tokens, expression).First());
+            Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
         }
 
         [Theory]
@@ -94,7 +94,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Variable(new Literal());
-            Assert.IsType<ErrorNode>(Parser.Parse(tokens, expression).First());
+            Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
         }
 
         [Fact]
@@ -103,9 +103,9 @@ namespace Frostscript.Tests
 
             Token[] tokens = [new Token(TokenType.Label, 0, 0, "hello")];
             var expression = new Label(new Literal());
-            INode[] expected = [new LabelNode("hello")];
+            INode expected = new LabelNode("hello");
 
-            Assert.Equal(expected, Parser.Parse(tokens, expression));
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
     }
 }

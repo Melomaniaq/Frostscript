@@ -12,9 +12,9 @@ namespace Frostscript.Tests
         [Fact]
         public void LiteralString()
         {
-            INode[] nodes = [new LiteralNode("Hello")];
+            var node = new LiteralNode("Hello");
             var expression = new Literal();
-            Assert.Equal("Hello", Interpreter.Interpret<string>(nodes, expression));
+            Assert.Equal("Hello", expression.Interpret(node, []));
         }
 
         [Theory]
@@ -46,9 +46,9 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.LessOrEqual, 1, 1, true])]
         internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
-            INode[] nodes = [new BinaryNode(type, new LiteralNode(left), new LiteralNode(right))];
+            var node = new BinaryNode(type, new LiteralNode(left), new LiteralNode(right));
             var expression = new Binary(type, new Literal());
-            Assert.Equal(result, Interpreter.Interpret<dynamic>(nodes, expression));
+            Assert.Equal(result, expression.Interpret(node, []));
         }
 
         [Fact]
@@ -56,8 +56,7 @@ namespace Frostscript.Tests
         {
             var node = new VariableNode("myVariable", new LiteralNode(1), true);
             var expression = new Variable(new Literal());
-            Dictionary<string, INode> variables = [];
-            Assert.Equal(new Void(), expression.Interpret(node, variables));
+            Assert.Equal(new Void(), expression.Interpret(node, []));
         }
 
         [Fact]
