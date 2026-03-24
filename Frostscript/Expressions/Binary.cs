@@ -18,7 +18,8 @@ namespace Frostscript.Expressions
             { BinaryType.GreaterThan, TokenType.GreaterThan }, 
             { BinaryType.GreaterOrEqual, TokenType.GreaterOrEqual }, 
             { BinaryType.LessThan, TokenType.LessThan }, 
-            { BinaryType.LessOrEqual, TokenType.LessOrEqual }, 
+            { BinaryType.LessOrEqual, TokenType.LessOrEqual },
+            { BinaryType.Assignment, TokenType.SingleEqual },
         };
         public (INode, Token[]) Parse(Token[] tokens)
         {

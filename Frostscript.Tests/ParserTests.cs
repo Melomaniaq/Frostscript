@@ -107,5 +107,21 @@ namespace Frostscript.Tests
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
+
+        [Fact]
+        public void Assignment()
+        {
+            Token[] tokens = 
+            [
+                new Token(TokenType.Label, 0, 0, "hello"), 
+                new Token(TokenType.SingleEqual, 0, 1), 
+                new Token(TokenType.Literal, 0, 2, 1)
+            ];
+
+            var expression = new Assignment(new Literal());
+            INode expected = new AssignmentNode("hello", new LiteralNode(1));
+
+            Assert.Equal((expected, []), expression.Parse(tokens));
+        }
     }
 }

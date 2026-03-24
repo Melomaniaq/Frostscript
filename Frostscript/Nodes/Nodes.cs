@@ -5,10 +5,24 @@ using System.Text;
 namespace Frostscript.Nodes
 {
     public interface INode { }
-    internal enum BinaryType { Addition, Subtraction, Multiplication, Devision, Equality, Inequality, GreaterThan, GreaterOrEqual, LessThan, LessOrEqual }
+    internal enum BinaryType 
+    { 
+        Addition, 
+        Subtraction, 
+        Multiplication, 
+        Devision, 
+        Equality, 
+        Inequality, 
+        GreaterThan, 
+        GreaterOrEqual, 
+        LessThan, 
+        LessOrEqual,
+        Assignment
+    }
     internal record struct BinaryNode(BinaryType Type, INode Left, INode Right) : INode;
     internal record struct VariableNode(string Label, INode Value, bool Mutable) : INode;
     internal record struct ErrorNode(string Error, Token Token) : INode;
-    internal record struct LabelNode(string label) : INode;
+    internal record struct LabelNode(string Label) : INode;
     internal record struct LiteralNode(dynamic Value) : INode;
+    internal record struct AssignmentNode(string Label, INode Value) : INode;
 }

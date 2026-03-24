@@ -10,7 +10,7 @@ namespace Frostscript.Expressions
         public dynamic Interpret(INode node, Dictionary<string, INode> variables)
         {
             if (node is LabelNode label) 
-                return Next.Interpret(variables[label.label], variables);
+                return Next.Interpret(variables[label.Label], variables);
             else 
                 return Next.Interpret(node, variables);
         }

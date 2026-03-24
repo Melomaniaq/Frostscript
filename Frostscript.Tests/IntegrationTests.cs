@@ -33,5 +33,11 @@ namespace Frostscript.Tests
         {
             Assert.Equal(2, Frostscript.Run<int>(@"let x = 2 x"));
         }
+
+        [Fact]
+        public void Assignment()
+        {
+            Assert.Equal(2, Frostscript.Run<int>(@"var x = 1 x = 2 x"));
+        }
     }
 }
