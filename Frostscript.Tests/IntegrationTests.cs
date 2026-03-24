@@ -27,5 +27,11 @@ namespace Frostscript.Tests
         {
             Assert.Equal(expected, Frostscript.Run<dynamic>(script));
         }
+
+        [Fact]
+        public void Variables()
+        {
+            Assert.Equal(2, Frostscript.Run<int>(@"let x = 2 x"));
+        }
     }
 }

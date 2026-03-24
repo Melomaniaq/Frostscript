@@ -8,6 +8,7 @@ namespace Frostscript.Expressions
     internal static class Expression
     {
         private static readonly IExpression expressions =
+            new Variable(
             new Binary(BinaryType.Inequality,
             new Binary(BinaryType.Equality,
             new Binary(BinaryType.GreaterThan,
@@ -18,7 +19,8 @@ namespace Frostscript.Expressions
             new Binary(BinaryType.Subtraction,
             new Binary(BinaryType.Devision,
             new Binary(BinaryType.Multiplication,
-            new Literal()))))))))));
+            new Label(
+            new Literal()))))))))))));
 
         public static IExpression Expressions => expressions;
     }
