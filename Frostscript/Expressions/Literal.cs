@@ -9,7 +9,7 @@ namespace Frostscript.Expressions
         public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type != TokenType.Literal)
-                return (new ErrorNode($"Unexpected token {tokens[0].Literal}", tokens[0]), tokens);
+                return (new ErrorNode($"Unexpected token {tokens[0].Literal}", tokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
             return (new LiteralNode(tokens[0].Literal), [.. tokens.Skip(1)]);
         }

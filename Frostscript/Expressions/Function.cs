@@ -28,7 +28,7 @@ namespace Frostscript.Expressions
                 return Next.Parse(tokens);
 
             if (tokens[1].Type is not TokenType.Label )
-                return (new ErrorNode("Expected Parameter",  tokens[1]), []);
+                return (new ErrorNode("Expected Parameter",  tokens[1]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
             var parameters =
                 tokens
@@ -40,7 +40,7 @@ namespace Frostscript.Expressions
             var newTokens = tokens.Skip(parameters.Length + 1).ToArray();
 
             if (newTokens[0].Type is not TokenType.Arrow)
-                return (new ErrorNode("Expected '->' ", newTokens[0]), []);
+                return (new ErrorNode("Expected '->' ", newTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
             var (body, bodyTokens) = Parse([.. newTokens.Skip(1)]);
             return (new FunctionNode(parameters, body), bodyTokens);
