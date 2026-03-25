@@ -19,7 +19,10 @@
         LessOrEqual,
         LessThan,
         And,
-        Or
+        Or,
+        Fun,
+        Arrow,
+        SemiColon
     }
 
     internal record struct Token(TokenType Type, int Line, int Character, dynamic? Literal = null);

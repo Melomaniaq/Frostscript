@@ -1,5 +1,4 @@
-﻿using Frostscript.Nodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -35,7 +34,7 @@ namespace Frostscript.Expressions
             else return (left, tokensAfterLeft);
 
         }
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is BinaryNode binary)
             {

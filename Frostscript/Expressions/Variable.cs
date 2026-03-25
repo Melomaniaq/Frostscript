@@ -1,4 +1,4 @@
-﻿using Frostscript.Nodes;
+﻿using Frostscript.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,12 +23,12 @@ namespace Frostscript.Expressions
             else return Next.Parse(tokens);
         }
 
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is VariableNode variableNode)
             {
                 variables[variableNode.Label] = variableNode.Value;
-                return new Void();
+                return new FSVoid();
             }
             else return Next.Interpret(node, variables);
         }

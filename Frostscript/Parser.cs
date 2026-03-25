@@ -1,5 +1,4 @@
 ﻿using Frostscript.Expressions;
-using Frostscript.Nodes;
 using System.Linq;
 
 namespace Frostscript

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Nodes
+namespace Frostscript
 {
     public interface INode { }
     internal enum BinaryType 
@@ -26,4 +26,6 @@ namespace Frostscript.Nodes
     internal record struct LabelNode(string Label) : INode;
     internal record struct LiteralNode(dynamic Value) : INode;
     internal record struct AssignmentNode(string Label, INode Value) : INode;
+    internal record struct FunctionNode(string[] Parameters, INode Body) : INode;
+    internal record struct CallNode(INode Left, INode Right) : INode;
 }

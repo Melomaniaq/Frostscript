@@ -1,9 +1,4 @@
-﻿using Frostscript.Expressions;
-using Frostscript.Nodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace Frostscript.Tests
 {
@@ -31,13 +26,19 @@ namespace Frostscript.Tests
         [Fact]
         public void Variables()
         {
-            Assert.Equal(2, Frostscript.Run<int>(@"let x = 2 x"));
+            Assert.Equal(2, Frostscript.Run<int>(@"let x = 2; x"));
         }
 
         [Fact]
         public void Assignment()
         {
-            Assert.Equal(2, Frostscript.Run<int>(@"var x = 1 x = 2 x"));
+            Assert.Equal(2, Frostscript.Run<int>(@"var x = 1; x = 2; x"));
+        }
+
+        [Fact]
+        public void Functions()
+        {
+            Assert.Equal(2, Frostscript.Run<int>(@"let test = fun x -> x; test 2"));
         }
     }
 }

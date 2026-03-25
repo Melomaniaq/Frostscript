@@ -1,5 +1,4 @@
-﻿using Frostscript.Nodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,7 +13,7 @@ namespace Frostscript.Expressions
 
             return (new LiteralNode(tokens[0].Literal), [.. tokens.Skip(1)]);
         }
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is LiteralNode literal) return literal.Value;
             else throw new NotImplementedException();

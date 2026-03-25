@@ -1,18 +1,15 @@
-﻿using Frostscript.Nodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Frostscript.Types;
 
 namespace Frostscript.Expressions
 {
     internal class Assignment(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is AssignmentNode assignment)
             {
                 variables[assignment.Label] = assignment.Value;
-                return new Void();
+                return new FSVoid();
             }
             else return Next.Interpret(node, variables);
         }

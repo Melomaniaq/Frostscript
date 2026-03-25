@@ -1,5 +1,4 @@
-﻿using Frostscript.Nodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,10 +6,10 @@ namespace Frostscript.Expressions
 {
     internal class Label(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is LabelNode label) 
-                return Next.Interpret(variables[label.Label], variables);
+                return Expression.ExpressionTree.Interpret(variables[label.Label], variables);
             else 
                 return Next.Interpret(node, variables);
         }
