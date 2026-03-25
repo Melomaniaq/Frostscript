@@ -34,7 +34,7 @@ namespace Frostscript.Expressions
             else return (left, tokensAfterLeft);
 
         }
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is BinaryNode binary)
             {

@@ -73,16 +73,16 @@ namespace Frostscript.Tests
         {
             var node = new VariableNode("myVariable", new LiteralNode(1), true);
             var expression = new Variable(new Literal());
-            Dictionary<string, INode> variables = new VariableDictionary();
+            var variables = new VariableDictionary();
             expression.Interpret(node, variables);
-            Assert.Equal(new LiteralNode(1), variables["myVariable"]);
+            Assert.Equal(1, variables["myVariable"]);
         }
 
         [Fact]
         internal void Label()
         {
             var node = new LabelNode("hello");
-            var variables = new VariableDictionary { { "hello", new LiteralNode(1) } };
+            var variables = new VariableDictionary { { "hello", 1 } };
             var expression = new Label(new Literal());
             Assert.Equal(1, expression.Interpret(node, variables));
         }
@@ -94,7 +94,7 @@ namespace Frostscript.Tests
             var variables = new VariableDictionary { { "hello", new LiteralNode(1) } };
             var expression = new Assignment(new Literal());
             Assert.Equal(new FSVoid(), expression.Interpret(node, variables));
-            Assert.Equal(new LiteralNode(2), variables["hello"]);
+            Assert.Equal(2, variables["hello"]);
         }
 
         [Fact]

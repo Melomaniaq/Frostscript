@@ -10,7 +10,7 @@ namespace Frostscript
     {
         internal static T Interpret<T>(INode[] ast, IExpression expressions)
         {
-            Dictionary<string, INode> globalVariables = [];
+            VariableDictionary globalVariables = [];
             return 
                 (T)ast
                 .Select(x => expressions.Interpret(x, globalVariables))

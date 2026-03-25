@@ -1,4 +1,4 @@
 ﻿namespace Frostscript
 {
-    internal class VariableDictionary : Dictionary<string, INode>;
+    internal class VariableDictionary : Dictionary<string, object>;
 }

@@ -7,9 +7,9 @@ namespace Frostscript.Types
     {
         internal string Parameter { get; }
         internal INode Body { get; }
-        internal IDictionary<string, INode> Closure { get; }
+        internal IDictionary<string, object> Closure { get; }
 
-        internal FSFunction(string parameter, INode body, IDictionary<string, INode> closure)
+        internal FSFunction(string parameter, INode body, IDictionary<string, object> closure)
         {
             Parameter = parameter;
             Body = body;
@@ -18,7 +18,7 @@ namespace Frostscript.Types
 
         public dynamic Call(dynamic value)
         {
-            Closure[Parameter] = new LiteralNode(value);
+            Closure[Parameter] = value;
             return Expression.ExpressionTree.Interpret(Body, Closure);
         }
 

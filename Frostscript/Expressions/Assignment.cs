@@ -4,11 +4,11 @@ namespace Frostscript.Expressions
 {
     internal class Assignment(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is AssignmentNode assignment)
             {
-                variables[assignment.Label] = assignment.Value;
+                variables[assignment.Label] = Expression.ExpressionTree.Interpret(assignment.Value, variables);
                 return new FSVoid();
             }
             else return Next.Interpret(node, variables);

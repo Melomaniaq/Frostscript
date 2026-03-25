@@ -8,6 +8,6 @@ namespace Frostscript.Expressions
     internal interface IExpression
     {
         public (INode, Token[]) Parse(Token[] tokens);
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables);
+        public dynamic Interpret(INode node, IDictionary<string, object> variables);
     }
 }

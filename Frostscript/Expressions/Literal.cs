@@ -13,7 +13,7 @@ namespace Frostscript.Expressions
 
             return (new LiteralNode(tokens[0].Literal), [.. tokens.Skip(1)]);
         }
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is LiteralNode literal) return literal.Value;
             if (node is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");

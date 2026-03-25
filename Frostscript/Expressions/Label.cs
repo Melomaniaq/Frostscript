@@ -6,10 +6,10 @@ namespace Frostscript.Expressions
 {
     internal class Label(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is LabelNode label) 
-                return Expression.ExpressionTree.Interpret(variables[label.Label], variables);
+                return variables[label.Label];
             else 
                 return Next.Interpret(node, variables);
         }

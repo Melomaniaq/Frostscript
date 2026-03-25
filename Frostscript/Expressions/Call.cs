@@ -4,7 +4,7 @@ namespace Frostscript.Expressions
 {
     internal class Call(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is CallNode call)
             {

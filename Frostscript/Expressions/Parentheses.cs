@@ -6,7 +6,7 @@ namespace Frostscript.Expressions
 {
     internal class Parentheses(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is ParenthesesNode parentheses)
                 return Expression.ExpressionTree.Interpret(parentheses.Body, variables);

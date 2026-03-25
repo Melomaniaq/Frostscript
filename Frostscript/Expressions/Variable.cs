@@ -23,11 +23,11 @@ namespace Frostscript.Expressions
             else return Next.Parse(tokens);
         }
 
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is VariableNode variableNode)
             {
-                variables[variableNode.Label] = variableNode.Value;
+                variables[variableNode.Label] = Expression.ExpressionTree.Interpret(variableNode.Value, variables);
                 return new FSVoid();
             }
             else return Next.Interpret(node, variables);

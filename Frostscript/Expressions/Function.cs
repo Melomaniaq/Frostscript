@@ -8,7 +8,7 @@ namespace Frostscript.Expressions
 {
     internal class Function(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, object> variables)
         {
             if (node is FunctionNode function) 
                 return function.Parameters
