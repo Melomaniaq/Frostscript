@@ -42,7 +42,7 @@ namespace Frostscript.Expressions
             if (newTokens[0].Type is not TokenType.Arrow)
                 return (new ErrorNode("Expected '->' ", newTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
-            var (body, bodyTokens) = Parse([.. newTokens.Skip(1)]);
+            var (body, bodyTokens) = Expression.ExpressionTree.Parse([.. newTokens.Skip(1)]);
             return (new FunctionNode(parameters, body), bodyTokens);
         }
     }
