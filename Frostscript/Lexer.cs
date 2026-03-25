@@ -20,8 +20,13 @@ namespace Frostscript
                 else
                     return script[0] switch
                     {
+                        ';' => Add(TokenType.SemiColon),
                         '+' => Add(TokenType.Plus),
-                        '-' => Add(TokenType.Minus),
+                        '-' => script[1] switch
+                        {
+                           '>' => Add(TokenType.Arrow, 2),
+                           _ => Add(TokenType.Minus)
+                        },
                         '/' => Add(TokenType.ForwardSlash),
                         '*' => Add(TokenType.Star),
 
@@ -60,6 +65,7 @@ namespace Frostscript
                                 "and" => Add(TokenType.And, label.Length),
                                 "or" => Add(TokenType.Or, label.Length),
                                 "var" => Add(TokenType.Var, label.Length),
+                                "fun" => Add(TokenType.Fun, label.Length),
                                 "true" => Add(TokenType.Literal, label.Length, true),
                                 "false" => Add(TokenType.Literal, label.Length, false),
                                 _ => Add(TokenType.Label, label.Length, label),

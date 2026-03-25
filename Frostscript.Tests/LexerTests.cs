@@ -35,19 +35,14 @@ namespace Frostscript.Tests
         [InlineData(">=", TokenType.GreaterOrEqual)]
         [InlineData("<", TokenType.LessThan)]
         [InlineData("<=", TokenType.LessOrEqual)]
-        internal void Operators(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
-
-        [Fact]
-        public void Var() => Assert.Equal([new Token(TokenType.Var, 0, 0)], Lexer.Lex("var"));
-
-        [Fact]
-        public void Let() => Assert.Equal([new Token(TokenType.Let, 0, 0)], Lexer.Lex("let"));
-
-        [Fact]
-        public void And() => Assert.Equal([new Token(TokenType.And, 0, 0)], Lexer.Lex("and"));
-
-        [Fact]
-        public void Or() => Assert.Equal([new Token(TokenType.Or, 0, 0)], Lexer.Lex("or"));
+        [InlineData("var", TokenType.Var)]
+        [InlineData("let", TokenType.Let)]
+        [InlineData("and", TokenType.And)]
+        [InlineData("or", TokenType.Or)]
+        [InlineData("fun", TokenType.Fun)]
+        [InlineData("->", TokenType.Arrow)]
+        [InlineData(";", TokenType.SemiColon)]
+        internal void OperatorsAndKeywords(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
 
         [Fact]
         public void True() => Assert.Equal([new Token(TokenType.Literal, 0, 0, true)], Lexer.Lex("true"));
