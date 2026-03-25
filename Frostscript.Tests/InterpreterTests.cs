@@ -1,5 +1,4 @@
 ﻿using Frostscript.Expressions;
-using Frostscript.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -95,6 +94,24 @@ namespace Frostscript.Tests
             var expression = new Assignment(new Literal());
             Assert.Equal(new Void(), expression.Interpret(node, variables));
             Assert.Equal(new LiteralNode(2), variables["hello"]);
+        }
+
+        [Fact]
+        internal void Function()
+        {
+            var node = new FunctionNode(["parameter"], new LiteralNode(1));
+            var variables = new Dictionary<string, INode>() { { "variable", new LiteralNode(1) } };
+            var expression = new Function(new Literal());
+
+            Assert.Equal(
+                new LiteralNode(
+                    new FrostFunction(
+                        new LiteralNode(1),
+                        new Closure(variables) { { "parameter", new LiteralNode(1) } }
+                    ) 
+                ), 
+                expression.Interpret(node, variables)
+            );
         }
     }
 }
