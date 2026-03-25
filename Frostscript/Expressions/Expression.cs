@@ -6,9 +6,10 @@ namespace Frostscript.Expressions
 {
     internal static class Expression
     {
-        private static readonly IExpression expressions =
+        private static readonly IExpression expressionTree =
             new Variable(
             new Assignment(
+            new Call(
             new Function(
             new Binary(BinaryType.Or,
             new Binary(BinaryType.And,
@@ -23,8 +24,8 @@ namespace Frostscript.Expressions
             new Binary(BinaryType.Devision,
             new Binary(BinaryType.Multiplication,
             new Label(
-            new Literal()))))))))))))))));
+            new Literal())))))))))))))))));
 
-        public static IExpression Expressions => expressions;
+        public static IExpression ExpressionTree => expressionTree;
     }
 }

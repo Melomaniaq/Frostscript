@@ -14,7 +14,7 @@ namespace Frostscript.Tests
         {
             var node = new LiteralNode("Hello");
             var expression = new Literal();
-            Assert.Equal("Hello", expression.Interpret(node, []));
+            Assert.Equal("Hello", expression.Interpret(node, new VariableDictionary()));
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace Frostscript.Tests
         {
             var node = new BinaryNode(type, new LiteralNode(left), new LiteralNode(right));
             var expression = new Binary(type, new Literal());
-            Assert.Equal(result, expression.Interpret(node, []));
+            Assert.Equal(result, expression.Interpret(node, new VariableDictionary()));
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Frostscript.Tests
         {
             var node = new VariableNode("myVariable", new LiteralNode(1), true);
             var expression = new Variable(new Literal());
-            Assert.Equal(new FSVoid(), expression.Interpret(node, []));
+            Assert.Equal(new FSVoid(), expression.Interpret(node, new VariableDictionary()));
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Frostscript.Tests
         {
             var node = new VariableNode("myVariable", new LiteralNode(1), true);
             var expression = new Variable(new Literal());
-            Dictionary<string, INode> variables = [];
+            Dictionary<string, INode> variables = new VariableDictionary();
             expression.Interpret(node, variables);
             Assert.Equal(new LiteralNode(1), variables["myVariable"]);
         }
@@ -82,7 +82,7 @@ namespace Frostscript.Tests
         internal void Label()
         {
             var node = new LabelNode("hello");
-            var variables = new Dictionary<string, INode>() { { "hello", new LiteralNode(1) } };
+            var variables = new VariableDictionary { { "hello", new LiteralNode(1) } };
             var expression = new Label(new Literal());
             Assert.Equal(1, expression.Interpret(node, variables));
         }
@@ -91,7 +91,7 @@ namespace Frostscript.Tests
         internal void Assignment()
         {
             var node = new AssignmentNode("hello", new LiteralNode(2));
-            var variables = new Dictionary<string, INode>() { { "hello", new LiteralNode(1) } };
+            var variables = new VariableDictionary { { "hello", new LiteralNode(1) } };
             var expression = new Assignment(new Literal());
             Assert.Equal(new FSVoid(), expression.Interpret(node, variables));
             Assert.Equal(new LiteralNode(2), variables["hello"]);
@@ -101,25 +101,42 @@ namespace Frostscript.Tests
         internal void Function()
         {
             var node = new FunctionNode(["parameter1", "parameter2"], new LiteralNode(1));
-            var variables = new Dictionary<string, INode>() { { "variable", new LiteralNode(1) } };
+            var variables = new VariableDictionary { { "variable", new LiteralNode(1) } };
             var expression = new Function(new Literal());
 
             var firstClosure = new Closure(variables);
 
-            Assert.Equivalent(
+            var expected = new FSFunction(
+                "parameter1",
+                new LiteralNode(new FSFunction(
+                    "parameter2",
+                    new LiteralNode(1),
+                    new Closure(firstClosure)
+                )),
+                firstClosure
+            );
+
+            Assert.Equivalent(expected, expression.Interpret(node, variables)
+            );
+        }
+
+        [Fact]
+        internal void Call()
+        {
+            var variables = new VariableDictionary();
+            var node = new CallNode(
                 new LiteralNode(
                     new FSFunction(
-                        "parameter1",
-                        new LiteralNode(new FSFunction(
-                            "parameter2",
-                            new LiteralNode(1),
-                            new Closure(firstClosure)
-                        )),
-                        firstClosure
-                    ) 
+                        "parameter", 
+                        new LabelNode("parameter"), 
+                        new VariableDictionary()
+                    )
                 ), 
-                (LiteralNode)expression.Interpret(node, variables)
+                new LiteralNode(1)
             );
+            var expression = new Call(new Label(new Literal()));
+
+            Assert.Equal(1, expression.Interpret(node, variables));
         }
     }
 }

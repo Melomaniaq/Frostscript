@@ -8,7 +8,7 @@ namespace Frostscript.Expressions
 {
     internal class Function(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is FunctionNode function) 
                 return function.Parameters
@@ -17,7 +17,7 @@ namespace Frostscript.Expressions
                 .Aggregate(
                     new FSFunction(function.Parameters.Last(), function.Body, new Closure(variables)),
                     (frostFunc, parameter) => new FSFunction(parameter, new LiteralNode(frostFunc), new Closure(frostFunc.Closure))
-                ).Pipe(x => new LiteralNode(x));
+                );
 
             else return Next.Interpret(node, variables);
         }

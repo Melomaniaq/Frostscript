@@ -4,7 +4,7 @@ namespace Frostscript.Expressions
 {
     internal class Assignment(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is AssignmentNode assignment)
             {
