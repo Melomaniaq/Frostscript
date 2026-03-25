@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frostscript.Types;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace Frostscript.Expressions
             if (node is VariableNode variableNode)
             {
                 variables[variableNode.Label] = variableNode.Value;
-                return new Void();
+                return new FSVoid();
             }
             else return Next.Interpret(node, variables);
         }

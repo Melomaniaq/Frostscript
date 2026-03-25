@@ -1,4 +1,5 @@
 ﻿using Frostscript.Expressions;
+using Frostscript.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -64,7 +65,7 @@ namespace Frostscript.Tests
         {
             var node = new VariableNode("myVariable", new LiteralNode(1), true);
             var expression = new Variable(new Literal());
-            Assert.Equal(new Void(), expression.Interpret(node, []));
+            Assert.Equal(new FSVoid(), expression.Interpret(node, []));
         }
 
         [Fact]
@@ -92,25 +93,32 @@ namespace Frostscript.Tests
             var node = new AssignmentNode("hello", new LiteralNode(2));
             var variables = new Dictionary<string, INode>() { { "hello", new LiteralNode(1) } };
             var expression = new Assignment(new Literal());
-            Assert.Equal(new Void(), expression.Interpret(node, variables));
+            Assert.Equal(new FSVoid(), expression.Interpret(node, variables));
             Assert.Equal(new LiteralNode(2), variables["hello"]);
         }
 
         [Fact]
         internal void Function()
         {
-            var node = new FunctionNode(["parameter"], new LiteralNode(1));
+            var node = new FunctionNode(["parameter1", "parameter2"], new LiteralNode(1));
             var variables = new Dictionary<string, INode>() { { "variable", new LiteralNode(1) } };
             var expression = new Function(new Literal());
 
-            Assert.Equal(
+            var firstClosure = new Closure(variables);
+
+            Assert.Equivalent(
                 new LiteralNode(
-                    new FrostFunction(
-                        new LiteralNode(1),
-                        new Closure(variables) { { "parameter", new LiteralNode(1) } }
+                    new FSFunction(
+                        "parameter1",
+                        new LiteralNode(new FSFunction(
+                            "parameter2",
+                            new LiteralNode(1),
+                            new Closure(firstClosure)
+                        )),
+                        firstClosure
                     ) 
                 ), 
-                expression.Interpret(node, variables)
+                (LiteralNode)expression.Interpret(node, variables)
             );
         }
     }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Frostscript
 {
-    internal class Closure(Dictionary<string, INode> globalVariables) : IDictionary<string, INode>
+    internal class Closure(IDictionary<string, INode> globalVariables) : IDictionary<string, INode>
     {
         readonly Dictionary<string, INode> _closure = [];
 

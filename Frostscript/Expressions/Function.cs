@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Frostscript.Types;
+using Frostware.Pipe;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +10,16 @@ namespace Frostscript.Expressions
     {
         public dynamic Interpret(INode node, Dictionary<string, INode> variables)
         {
-            throw new NotImplementedException();
+            if (node is FunctionNode function) 
+                return function.Parameters
+                .Reverse()
+                .Skip(1)
+                .Aggregate(
+                    new FSFunction(function.Parameters.Last(), function.Body, new Closure(variables)),
+                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralNode(frostFunc), new Closure(frostFunc.Closure))
+                ).Pipe(x => new LiteralNode(x));
+
+            else return Next.Interpret(node, variables);
         }
 
         public (INode, Token[]) Parse(Token[] tokens)

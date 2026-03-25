@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Frostscript.Types;
 
 namespace Frostscript.Expressions
 {
@@ -11,7 +9,7 @@ namespace Frostscript.Expressions
             if (node is AssignmentNode assignment)
             {
                 variables[assignment.Label] = assignment.Value;
-                return new Void();
+                return new FSVoid();
             }
             else return Next.Interpret(node, variables);
         }
