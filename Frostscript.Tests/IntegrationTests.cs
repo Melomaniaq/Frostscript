@@ -11,7 +11,8 @@ namespace Frostscript.Tests
         }
 
         [Theory]
-        [InlineData("2 + 4 * 2", 10)]
+        [InlineData("5 - 3 + 4 * 3", 14)]
+        [InlineData("2 - 4 + 2", 0)]
         [InlineData("2 + 2 == 1 * 4", true)]
         [InlineData("2 + 2 != 1 * 4", false)]
         [InlineData("2 + 2 >= 1 * 4", true)]
@@ -39,6 +40,12 @@ namespace Frostscript.Tests
         public void Functions()
         {
             Assert.Equal(2, Frostscript.Run<int>(@"let test = fun x -> x; test 2"));
+        }
+
+        [Fact]
+        public void Closure()
+        {
+            Assert.Equal(2, Frostscript.Run<int>(@"(fun x -> x) 2"));
         }
     }
 }

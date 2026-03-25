@@ -28,7 +28,7 @@ namespace Frostscript.Expressions
 
             if (operatorMap[type] == tokensAfterLeft[0].Type)
             {
-                var (right, tokensAfterRight) = next.Parse([.. tokensAfterLeft.Skip(1)]);
+                var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
                 return (new BinaryNode(type, left, right), tokensAfterRight);
             }
             else return (left, tokensAfterLeft);

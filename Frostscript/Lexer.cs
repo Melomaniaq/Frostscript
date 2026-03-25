@@ -20,6 +20,8 @@ namespace Frostscript
                 else
                     return script[0] switch
                     {
+                        '(' => Add(TokenType.ParenthesesOpen),
+                        ')' => Add(TokenType.ParenthesesClose),
                         ';' => Add(TokenType.SemiColon),
                         '+' => Add(TokenType.Plus),
                         '-' => script[1] switch

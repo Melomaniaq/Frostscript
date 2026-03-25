@@ -30,9 +30,15 @@ namespace Frostscript.Tests
         [InlineData(TokenType.Or, BinaryType.Or)]
         internal void Binary(TokenType @operator, BinaryType type)
         {
-            Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1), new Token(@operator, 0, 2), new Token(TokenType.Literal, 0, 4, 2)];
+            Token[] tokens = 
+            [
+                new Token(TokenType.Literal, 0, 0, 1), 
+                new Token(@operator, 0, 2), 
+                new Token(TokenType.Literal, 0, 4, 3), 
+                new Token(@operator, 0, 4), 
+                new Token(TokenType.Literal, 0, 4, 5)];
             var expression = new Binary(type, new Literal());
-            var expected = new BinaryNode(type, new LiteralNode(1), new LiteralNode(2));
+            var expected = new BinaryNode(type, new LiteralNode(1), new BinaryNode(type, new LiteralNode(3), new LiteralNode(5)));
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -171,13 +177,37 @@ namespace Frostscript.Tests
             Token[] tokens =
             [
                 new Token(TokenType.Label, 0, 0, "func"),
-                new Token(TokenType.Literal, 0, 1, 1)
+                new Token(TokenType.Literal, 0, 1, 1),
+                new Token(TokenType.Literal, 0, 1, 2)
+            ];
+
+            var expression = new Call(new Label(new Literal()));
+            var expected = new CallNode(new CallNode(new LabelNode("func"), new LiteralNode(1)), new LiteralNode(2));
+
+
+            var (actual, remainingTokens) = expression.Parse(tokens);
+
+            Assert.Empty(remainingTokens);
+            Assert.Equivalent(expected, actual);
+        }
+
+        [Fact]
+        public void CallWithTrailingParentheses()
+        {
+            Token[] tokens =
+            [
+                new Token(TokenType.Label, 0, 0, "func"),
+                new Token(TokenType.Literal, 0, 1, 1),
+                new Token(TokenType.ParenthesesClose, 0, 2)
             ];
 
             var expression = new Call(new Label(new Literal()));
             var expected = new CallNode(new LabelNode("func"), new LiteralNode(1));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            var (actual, remainingTokens) = expression.Parse(tokens);
+
+            Assert.Equal([new Token(TokenType.ParenthesesClose, 0, 2)], remainingTokens);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -205,6 +235,22 @@ namespace Frostscript.Tests
 
             var expression = new Call(new Label(new Literal()));
             var expected = new LabelNode("func");
+
+            Assert.Equal((expected, []), expression.Parse(tokens));
+        }
+
+        [Fact]
+        public void Parentheses()
+        {
+            Token[] tokens =
+            [
+                new Token(TokenType.ParenthesesOpen, 0, 0),
+                new Token(TokenType.Literal, 0, 1, 1),
+                new Token(TokenType.ParenthesesClose, 0, 2),
+            ];
+
+            var expression = new Parentheses(new Literal());
+            var expected = new ParenthesesNode(new LiteralNode(1));
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }

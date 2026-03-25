@@ -9,8 +9,8 @@ namespace Frostscript.Expressions
         private static readonly IExpression expressionTree =
             new Variable(
             new Assignment(
-            new Call(
             new Function(
+            new Call(
             new Binary(BinaryType.Or,
             new Binary(BinaryType.And,
             new Binary(BinaryType.Inequality,
@@ -24,7 +24,8 @@ namespace Frostscript.Expressions
             new Binary(BinaryType.Devision,
             new Binary(BinaryType.Multiplication,
             new Label(
-            new Literal())))))))))))))))));
+            new Parentheses(
+            new Literal()))))))))))))))))));
 
         public static IExpression ExpressionTree => expressionTree;
     }

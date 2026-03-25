@@ -16,7 +16,8 @@ namespace Frostscript.Expressions
         public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is LiteralNode literal) return literal.Value;
-            else throw new NotImplementedException();
+            if (node is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
+            else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
     }
 }

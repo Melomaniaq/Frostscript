@@ -19,16 +19,22 @@ namespace Frostscript.Expressions
 
         public (INode, Token[]) Parse(Token[] tokens)
         {
-            var (left, leftTokens) = Next.Parse(tokens);
-            if (leftTokens.Length == 0) return (left, leftTokens);
-
-            if (leftTokens.Length != 0 && leftTokens[0].Type is not TokenType.SemiColon)
+            (INode, Token[]) GenerateCall(INode node, Token[] tokens)
             {
-                var (right, rightTokens) = Next.Parse(leftTokens);
-                return (new CallNode(left, right), rightTokens);
+                if (tokens.Length == 0)
+                    return (node, tokens);
+
+                if (tokens[0].Type is not (TokenType.SemiColon or TokenType.ParenthesesClose))
+                {
+                    var (argument, argumentTokens) = Next.Parse(tokens);
+                    return GenerateCall(new CallNode(node, argument), argumentTokens);
+                }
+
+                return (node, tokens[0].Type is TokenType.SemiColon ? [.. tokens.Skip(1)] : tokens);
             }
-           
-            return (left, leftTokens[0].Type is TokenType.SemiColon ? [.. leftTokens.Skip(1)] : leftTokens);
+
+            var (left, leftTokens) = Next.Parse(tokens);
+            return GenerateCall(left, leftTokens);
         }
     }
 }

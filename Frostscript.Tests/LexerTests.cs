@@ -35,13 +35,15 @@ namespace Frostscript.Tests
         [InlineData(">=", TokenType.GreaterOrEqual)]
         [InlineData("<", TokenType.LessThan)]
         [InlineData("<=", TokenType.LessOrEqual)]
+        [InlineData(";", TokenType.SemiColon)]
+        [InlineData("(", TokenType.ParenthesesOpen)]
+        [InlineData(")", TokenType.ParenthesesClose)]
+        [InlineData("->", TokenType.Arrow)]
         [InlineData("var", TokenType.Var)]
         [InlineData("let", TokenType.Let)]
         [InlineData("and", TokenType.And)]
         [InlineData("or", TokenType.Or)]
         [InlineData("fun", TokenType.Fun)]
-        [InlineData("->", TokenType.Arrow)]
-        [InlineData(";", TokenType.SemiColon)]
         internal void OperatorsAndKeywords(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
 
         [Fact]
