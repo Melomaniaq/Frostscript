@@ -77,13 +77,12 @@ namespace Frostscript
                             new string([.. script.TakeWhile(x => char.IsNumber(x) || x == '.')])
                             .Pipe(number => Add(TokenType.Literal, number.Length, decimal.Parse(number))),
 
-                        ' ' => Generate(tokens, [.. script.Skip(1)], line, character + 1),
-
+                        ' ' or '\t' => Generate(tokens, [.. script.Skip(1)], line, character + 1),
+                        '\n' => Generate(tokens, [.. script.Skip(1)], line + 1, 0),
+                        '\r' => Generate(tokens, [.. script.Skip(1)], line, character),
                         _ => throw new NotImplementedException()
-
                     };
             }
-
             return Generate([], [.. script, ' '], 0, 0);
         }
     }
