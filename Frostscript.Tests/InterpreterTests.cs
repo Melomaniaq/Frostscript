@@ -138,5 +138,13 @@ namespace Frostscript.Tests
 
             Assert.Equal(1, expression.Interpret(node, variables));
         }
+
+        [Fact]
+        internal void Parentheses()
+        {
+            var node = new ParenthesesNode(new LiteralNode(1));
+            var expression = new Parentheses(new Literal());
+            Assert.Equal(1, expression.Interpret(node, new VariableDictionary()));
+        }
     }
 }
