@@ -23,7 +23,7 @@ namespace Frostscript.Expressions
             else return Next.Parse(tokens);
         }
 
-        public dynamic Interpret(INode node, Dictionary<string, INode> variables)
+        public dynamic Interpret(INode node, IDictionary<string, INode> variables)
         {
             if (node is VariableNode variableNode)
             {

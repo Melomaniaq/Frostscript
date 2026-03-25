@@ -52,7 +52,7 @@ namespace Frostscript.Tests
         [InlineData(false)]
         public void Variable(bool mutable)
         {
-            Token[] tokens = 
+            Token[] tokens =
             [
                 new Token(mutable ? TokenType.Var : TokenType.Let, 0, 0),
                 new Token(TokenType.Label, 0, 1, "myVariable"),
@@ -112,10 +112,10 @@ namespace Frostscript.Tests
         [Fact]
         public void Assignment()
         {
-            Token[] tokens = 
+            Token[] tokens =
             [
-                new Token(TokenType.Label, 0, 0, "hello"), 
-                new Token(TokenType.SingleEqual, 0, 1), 
+                new Token(TokenType.Label, 0, 0, "hello"),
+                new Token(TokenType.SingleEqual, 0, 1),
                 new Token(TokenType.Literal, 0, 2, 1)
             ];
 
@@ -163,6 +163,50 @@ namespace Frostscript.Tests
 
             Assert.Empty(remainingTokens);
             Assert.Equivalent(expected, actual);
+        }
+
+        [Fact]
+        public void Call()
+        {
+            Token[] tokens =
+            [
+                new Token(TokenType.Label, 0, 0, "func"),
+                new Token(TokenType.Literal, 0, 1, 1)
+            ];
+
+            var expression = new Call(new Label(new Literal()));
+            var expected = new CallNode(new LabelNode("func"), new LiteralNode(1));
+
+            Assert.Equal((expected, []), expression.Parse(tokens));
+        }
+
+        [Fact]
+        public void CallPassthroughSemiColon()
+        {
+            Token[] tokens =
+            [
+                new Token(TokenType.Label, 0, 0, "func"),
+                new Token(TokenType.SemiColon, 0, 1)
+            ];
+
+            var expression = new Call(new Label(new Literal()));
+            var expected = new LabelNode("func");
+
+            Assert.Equal((expected, []), expression.Parse(tokens));
+        }
+
+        [Fact]
+        public void CallPassthrougEndOfFile()
+        {
+            Token[] tokens =
+            [
+                new Token(TokenType.Label, 0, 0, "func"),
+            ];
+
+            var expression = new Call(new Label(new Literal()));
+            var expected = new LabelNode("func");
+
+            Assert.Equal((expected, []), expression.Parse(tokens));
         }
     }
 }

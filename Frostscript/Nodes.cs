@@ -27,4 +27,5 @@ namespace Frostscript
     internal record struct LiteralNode(dynamic Value) : INode;
     internal record struct AssignmentNode(string Label, INode Value) : INode;
     internal record struct FunctionNode(string[] Parameters, INode Body) : INode;
+    internal record struct CallNode(INode Left, INode Right) : INode;
 }

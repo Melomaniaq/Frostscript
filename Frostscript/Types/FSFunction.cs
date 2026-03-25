@@ -1,17 +1,27 @@
 ﻿
+using Frostscript.Expressions;
+
 namespace Frostscript.Types
 {
-    public record class FSFunction
+    public record class FSFunction : ICallable
     {
         internal string Parameter { get; }
         internal INode Body { get; }
-        internal Closure Closure { get; }
+        internal IDictionary<string, INode> Closure { get; }
 
-        internal FSFunction(string parameter, INode body, Closure closure)
+        internal FSFunction(string parameter, INode body, IDictionary<string, INode> closure)
         {
             Parameter = parameter;
             Body = body;
             Closure = closure;
         }
+
+        public dynamic Call(dynamic value)
+        {
+            Closure[Parameter] = new LiteralNode(value);
+            return Expression.ExpressionTree.Interpret(Body, Closure);
+        }
+
+        public T Call<T>(dynamic value) => (T)Call(value);
     };
 }
