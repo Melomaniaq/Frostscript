@@ -8,14 +8,17 @@ namespace Frostscript
 {
     internal static class Interpreter
     {
-        internal static T Interpret<T>(INode[] ast, IExpression expressions)
+        internal static dynamic Interpret(INode[] ast, IExpression expressions)
         {
             VariableDictionary globalVariables = [];
-            return 
-                (T)ast
-                .Select(x => expressions.Interpret(x, globalVariables))
-                .ToArray()
-                .Last();
+
+            return ast
+            .Select(x => expressions.Interpret(x, globalVariables))
+            .ToArray()
+            .Last();
         }
+
+        internal static T Interpret<T>(INode[] ast, IExpression expressions) => (T)Interpret(ast, expressions);
+      
     }
 }

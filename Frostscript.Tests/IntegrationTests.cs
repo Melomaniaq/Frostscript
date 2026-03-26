@@ -50,7 +50,8 @@ namespace Frostscript.Tests
             Assert.Equal(5, Frostscript.Run<int>(
             @"
                 var x = 2; 
-                let incrementX = fun y -> x = x + y; 
+                let incrementX = fun y -> 
+                    x = x + y; 
                 incrementX 3; 
                 x
             "));
