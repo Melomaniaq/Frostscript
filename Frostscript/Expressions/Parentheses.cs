@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frostscript.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -24,7 +25,7 @@ namespace Frostscript.Expressions
             if (bodyTokens.Length != 0 && bodyTokens[0].Type is not TokenType.ParenthesesClose)
                 return (new ErrorNode("Expected ')'", bodyTokens[0]), [.. bodyTokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
-            return (new ParenthesesNode(body), [.. bodyTokens.Skip(1)]);
+            return (new ParenthesesNode(body, tokens[0]), [.. bodyTokens.Skip(1)]);
         }
     }
 }

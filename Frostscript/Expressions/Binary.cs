@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frostscript.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -29,7 +30,12 @@ namespace Frostscript.Expressions
             if (operatorMap[type] == tokensAfterLeft[0].Type)
             {
                 var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
-                return (new BinaryNode(type, left, right), tokensAfterRight);
+                IDataType dataType = type switch
+                {
+                    BinaryType.Addition => new NumberType(),
+                };
+
+                return (new BinaryNode(type, left, right, ), tokensAfterRight);
             }
             else return (left, tokensAfterLeft);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frostscript.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;

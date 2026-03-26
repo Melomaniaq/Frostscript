@@ -1,4 +1,5 @@
-﻿using Frostscript.Types;
+﻿using Frostscript.Internal;
+using Frostscript.Types;
 using Frostware.Pipe;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ namespace Frostscript.Expressions
 {
     internal class Function(IExpression Next) : IExpression
     {
-        public dynamic Interpret(INode node, IDictionary<string, object> variables)
+        public dynamic Interpret(INode node, IDictionary<string, dynamic> variables)
         {
             if (node is FunctionNode function) 
                 return function.Parameters
                 .Reverse()
                 .Skip(1)
                 .Aggregate(
-                    new FSFunction(function.Parameters.Last(), function.Body, new Closure(variables)),
-                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralNode(frostFunc), new Closure(frostFunc.Closure))
+                    new FSFunction(function.Parameters.Last(), function.Body, new Closure<string, dynamic>(variables)),
+                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralNode(frostFunc), new Closure<string, dynamic>(frostFunc.Closure))
                 );
 
             else return Next.Interpret(node, variables);

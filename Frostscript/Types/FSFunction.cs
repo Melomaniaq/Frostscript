@@ -1,9 +1,10 @@
 ﻿
 using Frostscript.Expressions;
+using Frostscript.Internal;
 
 namespace Frostscript.Types
 {
-    public record class FSFunction : ICallable
+    public class FSFunction : ICallable
     {
         internal string Parameter { get; }
         internal INode Body { get; }

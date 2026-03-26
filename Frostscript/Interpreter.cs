@@ -1,4 +1,5 @@
 ﻿using Frostscript.Expressions;
+using Frostscript.Internal;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -19,6 +20,5 @@ namespace Frostscript
         }
 
         internal static T Interpret<T>(INode[] ast, IExpression expressions) => (T)Interpret(ast, expressions);
-      
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Frostscript
+﻿namespace Frostscript.Internal
 {
     internal enum TokenType { 
         Literal,

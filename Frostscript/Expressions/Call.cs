@@ -1,4 +1,5 @@
-﻿using Frostscript.Types;
+﻿using Frostscript.Internal;
+using Frostscript.Types;
 
 namespace Frostscript.Expressions
 {

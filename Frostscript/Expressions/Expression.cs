@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frostscript.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace Frostscript.Expressions
     internal static class Expression
     {
         private static readonly IExpression expressionTree =
-            new Variable(
+            new VariableDecleration(
             new Assignment(
             new Function(
             new Call(
