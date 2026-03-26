@@ -13,9 +13,9 @@ namespace Frostscript
             VariableDictionary globalVariables = [];
 
             return ast
-            .Select(x => expressions.Interpret(x, globalVariables))
-            .ToArray()
-            .Last();
+                .Select(x => expressions.Interpret(x, globalVariables))
+                .ToArray()
+                .Last();
         }
 
         internal static T Interpret<T>(INode[] ast, IExpression expressions) => (T)Interpret(ast, expressions);
