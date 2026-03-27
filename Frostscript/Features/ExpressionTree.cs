@@ -22,7 +22,7 @@ namespace Frostscript.Features
             new Binary(BinaryType.LessOrEqual,
             new Binary(BinaryType.Addition,
             new Binary(BinaryType.Subtraction,
-            new Binary(BinaryType.Devision,
+            new Binary(BinaryType.Division,
             new Binary(BinaryType.Multiplication,
             new Label(
             new Parentheses(

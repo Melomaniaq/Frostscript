@@ -22,7 +22,7 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.Addition, 1, 2, 3])]
         [InlineData([BinaryType.Subtraction, 1, 2, -1])]
         [InlineData([BinaryType.Multiplication, 2, 3, 6])]
-        [InlineData([BinaryType.Devision, 6, 3, 2])]
+        [InlineData([BinaryType.Division, 6, 3, 2])]
 
         [InlineData([BinaryType.Equality, 1, 1, true])]
         [InlineData([BinaryType.Equality, 1, 2, false])]

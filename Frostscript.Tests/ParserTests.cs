@@ -20,7 +20,7 @@ namespace Frostscript.Tests
         [InlineData(TokenType.Plus, BinaryType.Addition)]
         [InlineData(TokenType.Minus, BinaryType.Subtraction)]
         [InlineData(TokenType.Star, BinaryType.Multiplication)]
-        [InlineData(TokenType.ForwardSlash, BinaryType.Devision)]
+        [InlineData(TokenType.ForwardSlash, BinaryType.Division)]
         [InlineData(TokenType.DoubleEqual, BinaryType.Equality)]
         [InlineData(TokenType.NotEqual, BinaryType.Inequality)]
         [InlineData(TokenType.GreaterThan, BinaryType.GreaterThan)]

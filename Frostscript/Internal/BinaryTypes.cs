@@ -6,7 +6,7 @@ namespace Frostscript.Internal
         Addition,
         Subtraction,
         Multiplication,
-        Devision,
+        Division,
         Equality,
         Inequality,
         GreaterThan,

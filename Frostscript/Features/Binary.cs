@@ -12,7 +12,7 @@ namespace Frostscript.Features
             { BinaryType.Addition, TokenType.Plus }, 
             { BinaryType.Subtraction, TokenType.Minus }, 
             { BinaryType.Multiplication, TokenType.Star }, 
-            { BinaryType.Devision, TokenType.ForwardSlash }, 
+            { BinaryType.Division, TokenType.ForwardSlash }, 
             { BinaryType.Equality, TokenType.DoubleEqual }, 
             { BinaryType.Inequality, TokenType.NotEqual }, 
             { BinaryType.GreaterThan, TokenType.GreaterThan }, 
@@ -25,7 +25,7 @@ namespace Frostscript.Features
       
         public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
-            if (node is BinaryNode binary)
+            if (node is BinaryExpression binary)
             {
                 var left = next.Interpret(binary.Left, variables);
                 var right = next.Interpret(binary.Right, variables);
@@ -35,7 +35,7 @@ namespace Frostscript.Features
                     BinaryType.Addition => left + right,
                     BinaryType.Subtraction => left - right,
                     BinaryType.Multiplication => left * right,
-                    BinaryType.Devision => left / right,
+                    BinaryType.Division => left / right,
                     BinaryType.Equality => left == right,
                     BinaryType.Inequality => left != right,
                     BinaryType.GreaterThan => left > right,
@@ -56,14 +56,61 @@ namespace Frostscript.Features
             if (operatorMap[type] == tokensAfterLeft[0].Type)
             {
                 var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
-                IDataType dataType = type switch
-                {
-                    BinaryType.Addition => new NumberType(),
-                };
-
                 return (new BinaryNode(type, left, right, tokensAfterLeft[0]), tokensAfterRight);
             }
             else return (left, tokensAfterLeft);
+        }
+
+        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        {
+            if (node is BinaryNode binary)
+            {
+                return next.Validate(binary.Left, variables)
+                    .Bind(left => next.Validate(binary.Right, variables)
+                        .Bind(right =>
+                        {
+                            BinaryExpression BinaryOFType(IDataType dataType) => new (binary.Type, left, right, dataType);
+
+                            return binary.Type switch
+                            {
+                                BinaryType.Subtraction or
+                                BinaryType.Multiplication or
+                                BinaryType.Division or
+                                BinaryType.LessThan or
+                                BinaryType.LessOrEqual or
+                                BinaryType.GreaterOrEqual or
+                                BinaryType.GreaterThan => (left.DataType, right.DataType) switch
+                                {
+                                    (NumberType, NumberType) => new Pass(BinaryOFType(new NumberType())),
+                                    _ => new Fail(
+                                        binary.Token,
+                                        $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
+                                    ),
+                                },
+                                BinaryType.Addition => (left.DataType, right.DataType) switch
+                                {
+                                    (NumberType, NumberType) => new Pass(BinaryOFType(new NumberType())),
+                                    (StringType, StringType) => new Pass(BinaryOFType(new StringType())),
+                                    _ => new Fail(
+                                        binary.Token,
+                                        $"type {left.DataType} cannot be additioned with type {right.DataType}"
+                                    ),
+                                },
+                                BinaryType.Equality or BinaryType.Inequality => new Pass(new BinaryExpression(binary.Type, left, right, new BoolType())),
+                                BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
+                                {
+                                    (BoolType, BoolType) => new Pass(BinaryOFType(new BoolType())),
+                                    _ => new Fail(
+                                        binary.Token,
+                                        $"Both sides of {binary.Type} must be a Bool. {left.DataType} and {right.DataType} where given"
+                                    ),
+                                },
+                                _ => throw new NotImplementedException()
+                            };
+                        })
+                    );
+            }
+            else return next.Validate(node, variables);
         }
     }
 }

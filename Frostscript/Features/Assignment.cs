@@ -43,7 +43,7 @@ namespace Frostscript.Features
                 return Next.Validate(assignment.Value, variables)
                     .Bind(value =>
                     {
-                        if (value.DataType == variableData.DataType) return new Pass(value);
+                        if (value.DataType == variableData.DataType) return new Pass(new AssignmentExpression(assignment.Label, value, new VoidType()));
                         else return new Fail(
                             assignment.Token,
                             $"Variable {assignment.Label} is of type {variableData.DataType} and cannot be assigned a value of type {value.DataType}"
