@@ -1,7 +1,7 @@
 ﻿using Frostscript.Internal;
 using Frostscript.Types;
 
-namespace Frostscript.Expressions
+namespace Frostscript.Features
 {
     internal class Call(IFeature Next) : IFeature
     {

@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Expressions
+namespace Frostscript.Features
 {
     internal static class ExpressionTree
     {
-        private static readonly IFeature global =
+        private static readonly IFeature expressionTree =
             new VariableDecleration(
             new Assignment(
             new Function(
@@ -28,6 +28,8 @@ namespace Frostscript.Expressions
             new Parentheses(
             new Literal()))))))))))))))))));
 
-        public static IFeature Global => global;
+        public static IValidationResult Validate(INode node, IDictionary<string, VariableData> variables) => expressionTree.Validate(node, variables);
+        public static (INode, Token[]) Parse(Token[] tokens) => expressionTree.Parse(tokens);
+        public static dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables) => expressionTree.Interpret(expression, variables);
     }
 }

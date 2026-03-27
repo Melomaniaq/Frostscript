@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Expressions
+namespace Frostscript.Features
 {
     internal class Label(IFeature Next) : IFeature
     {

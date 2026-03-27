@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Expressions
+namespace Frostscript.Features
 {
     internal class Binary(BinaryType type, IFeature next) : IFeature
     {
@@ -22,24 +22,7 @@ namespace Frostscript.Expressions
             { BinaryType.And, TokenType.And },
             { BinaryType.Or, TokenType.Or },
         };
-        public (IExpression, Token[]) Parse(Token[] tokens)
-        {
-            var (left, tokensAfterLeft) = next.Parse(tokens);
-            if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
-
-            if (operatorMap[type] == tokensAfterLeft[0].Type)
-            {
-                var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
-                IDataType dataType = type switch
-                {
-                    BinaryType.Addition => new NumberType(),
-                };
-
-                return (new BinaryNode(type, left, right, ), tokensAfterRight);
-            }
-            else return (left, tokensAfterLeft);
-
-        }
+      
         public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
             if (node is BinaryNode binary)
@@ -64,6 +47,23 @@ namespace Frostscript.Expressions
                 };
             }
             else return next.Interpret(node, variables);
+        }
+        public (INode, Token[]) Parse(Token[] tokens)
+        {
+            var (left, tokensAfterLeft) = next.Parse(tokens);
+            if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
+
+            if (operatorMap[type] == tokensAfterLeft[0].Type)
+            {
+                var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
+                IDataType dataType = type switch
+                {
+                    BinaryType.Addition => new NumberType(),
+                };
+
+                return (new BinaryNode(type, left, right, tokensAfterLeft[0]), tokensAfterRight);
+            }
+            else return (left, tokensAfterLeft);
         }
     }
 }

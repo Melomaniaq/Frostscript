@@ -1,5 +1,5 @@
 ﻿
-using Frostscript.Expressions;
+using Frostscript.Features;
 using Frostscript.Internal;
 
 namespace Frostscript.Types
