@@ -6,5 +6,5 @@ namespace Frostscript.Internal
     internal record struct StringType : IDataType;
     internal record struct BoolType : IDataType;
     internal record struct VoidType : IDataType;
-    internal record Function(IDataType Parameter, IDataType Body) : IDataType;
+    internal record FunctionType(IDataType Parameter, IDataType Body) : IDataType;
 }
