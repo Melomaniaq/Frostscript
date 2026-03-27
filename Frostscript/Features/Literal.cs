@@ -8,10 +8,10 @@ namespace Frostscript.Features
     internal class Literal : IFeature
     {
        
-        public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables)
         {
-            if (node is LiteralNode literal) return literal.Value;
-            if (node is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
+            if (expression is LiteralNode literal) return literal.Value;
+            if (expression is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
             else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
         public (INode, Token[]) Parse(Token[] tokens)

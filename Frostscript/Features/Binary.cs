@@ -23,9 +23,9 @@ namespace Frostscript.Features
             { BinaryType.Or, TokenType.Or },
         };
       
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (node is BinaryExpression binary)
+            if (expression is BinaryExpression binary)
             {
                 var left = next.Interpret(binary.Left, variables);
                 var right = next.Interpret(binary.Right, variables);
@@ -46,7 +46,7 @@ namespace Frostscript.Features
                     BinaryType.Or => left || right,
                 };
             }
-            else return next.Interpret(node, variables);
+            else return next.Interpret(expression, variables);
         }
         public (INode, Token[]) Parse(Token[] tokens)
         {

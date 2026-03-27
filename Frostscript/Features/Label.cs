@@ -7,12 +7,12 @@ namespace Frostscript.Features
 {
     internal class Label(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (node is LabelExpression label) 
+            if (expression is LabelExpression label) 
                 return variables[label.Label];
             else 
-                return Next.Interpret(node, variables);
+                return Next.Interpret(expression, variables);
         }
 
         public (INode, Token[]) Parse(Token[] tokens)

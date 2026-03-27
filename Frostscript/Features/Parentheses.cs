@@ -7,15 +7,15 @@ namespace Frostscript.Features
 {
     internal class Parentheses(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (node is ParenthesesNode parentheses)
+            if (expression is ParenthesesNode parentheses)
                 return ExpressionTree.ExpressionTree.Interpret(parentheses.Body, variables);
 
-            return Next.Interpret(node, variables);
+            return Next.Interpret(expression, variables);
         }
 
-        public (IExpression, Token[]) Parse(Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.ParenthesesOpen)
                 return Next.Parse(tokens);

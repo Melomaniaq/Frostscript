@@ -5,9 +5,9 @@ namespace Frostscript.Features
 {
     internal class Call(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (node is CallExpression call)
+            if (expression is CallExpression call)
             {
                 var left = (ICallable)Next.Interpret(call.Left, variables);
                 var right = Next.Interpret(call.Right, variables);
@@ -15,7 +15,7 @@ namespace Frostscript.Features
                 return left.Call(right);
             }
 
-            return Next.Interpret(node, variables);
+            return Next.Interpret(expression, variables);
         }
 
         public (INode, Token[]) Parse(Token[] tokens)

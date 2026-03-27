@@ -5,18 +5,18 @@ namespace Frostscript.Features
 {
     internal class Function(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables)
         {
-            if (node is FunctionExpression function) 
+            if (expression is FunctionExpression function) 
                 return function.Parameters
                 .Reverse()
                 .Skip(1)
                 .Aggregate(
                     new FSFunction(function.Parameters.Last(), function.Body, new Closure<string, dynamic>(variables)),
-                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralNode(frostFunc), new Closure<string, dynamic>(frostFunc.Closure))
+                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralExpression(frostFunc, new FunctionType(),)), new Closure<string, dynamic>(frostFunc.Closure))
                 );
 
-            else return Next.Interpret(node, variables);
+            else return Next.Interpret(expression, variables);
         }
 
         public (INode, Token[]) Parse(Token[] tokens)
