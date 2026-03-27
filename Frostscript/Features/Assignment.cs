@@ -3,13 +3,13 @@ using Frostscript.Types;
 
 namespace Frostscript.Expressions
 {
-    internal class Assignment(IExpression Next) : IExpression
+    internal class Assignment(IFeature Next) : IFeature
     {
-        public dynamic Interpret(INode node, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
         {
             if (node is AssignmentNode assignment)
             {
-                variables[assignment.Label] = Expression.ExpressionTree.Interpret(assignment.Value, variables);
+                variables[assignment.Label] = ExpressionTree.Global.Interpret(assignment.Value, variables);
                 return new FSVoid();
             }
 
@@ -22,7 +22,7 @@ namespace Frostscript.Expressions
             {
                 var (value, valueTokens) = Next.Parse([.. tokens.Skip(2)]);
                 return (
-                    new AssignmentNode(tokens[0].Literal, value, new VoidType(), tokens[1]),
+                    new AssignmentNode(tokens[0].Literal, value, tokens[1]),
                     valueTokens
                 );
             }
@@ -30,9 +30,9 @@ namespace Frostscript.Expressions
             else return Next.Parse(tokens);
         }
 
-        public IValidationResult Validate(NodeContext context, IDictionary<string, ValidationVariable> variables)
+        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
-            if (context.Node is AssignmentNode assignment)
+            if (node is AssignmentNode assignment)
             {
                 if (!variables[assignment.Label].Mutable)
                     return new Fail($"Variable {assignment.Label} is immutable and cannot be assigned to", context.Token);
@@ -42,14 +42,14 @@ namespace Frostscript.Expressions
 
                 if (assignment.Value.DataType != value.DataType)
                     return new Fail(
-                        $"Variable {assignment.Label} is of type {variables[assignment.Label].DataType} and cannot be assigned a value of type {assignment.Value.DataType}", 
-                        context.Token
+                        $"Variable {assignment.Label} is of type {variables[assignment.Label].DataType} and cannot be assigned a value of type {assignment.Value.DataType}",
+                        node.Token
                     );
 
                 return new Pass(assignment);
             }
 
-            else return Next.Validate(context, variables);
+            else return Next.Validate(node, variables);
         }
     }
 }

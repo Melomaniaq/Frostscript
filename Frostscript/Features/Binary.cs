@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class Binary(BinaryType type, IExpression next) : IExpression
+    internal class Binary(BinaryType type, IFeature next) : IFeature
     {
         readonly Dictionary<BinaryType, TokenType> operatorMap = new() 
         { 
@@ -22,7 +22,7 @@ namespace Frostscript.Expressions
             { BinaryType.And, TokenType.And },
             { BinaryType.Or, TokenType.Or },
         };
-        public (INode, Token[]) Parse(Token[] tokens)
+        public (IExpression, Token[]) Parse(Token[] tokens)
         {
             var (left, tokensAfterLeft) = next.Parse(tokens);
             if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
@@ -40,7 +40,7 @@ namespace Frostscript.Expressions
             else return (left, tokensAfterLeft);
 
         }
-        public dynamic Interpret(INode node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
             if (node is BinaryNode binary)
             {

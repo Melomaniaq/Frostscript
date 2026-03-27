@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class VariableDecleration(IExpression Next) : IExpression
+    internal class VariableDecleration(IFeature Next) : IFeature
     {
         public ParserResult Parse(Token[] tokens)
         {
@@ -32,11 +32,11 @@ namespace Frostscript.Expressions
             else return Next.Parse(tokens);
         }
 
-        public dynamic Interpret(INode node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
             if (node is VariableNode variableNode)
             {
-                variables[variableNode.Label] = Expression.ExpressionTree.Interpret(variableNode.Value, variables);
+                variables[variableNode.Label] = ExpressionTree.ExpressionTree.Interpret(variableNode.Value, variables);
                 return new FSVoid();
             }
             else return Next.Interpret(node, variables);

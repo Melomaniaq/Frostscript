@@ -3,9 +3,9 @@ using Frostscript.Types;
 
 namespace Frostscript.Expressions
 {
-    internal class Call(IExpression Next) : IExpression
+    internal class Call(IFeature Next) : IFeature
     {
-        public dynamic Interpret(INode node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
             if (node is CallNode call)
             {
@@ -18,9 +18,9 @@ namespace Frostscript.Expressions
             return Next.Interpret(node, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public (IExpression, Token[]) Parse(Token[] tokens)
         {
-            (INode, Token[]) GenerateCall(INode node, Token[] tokens)
+            (IExpression, Token[]) GenerateCall(IExpression node, Token[] tokens)
             {
                 if (tokens.Length == 0)
                     return (node, tokens);

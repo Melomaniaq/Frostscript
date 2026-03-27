@@ -11,7 +11,7 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
             var expression = new Literal();
-            INode expected = new LiteralNode("Hello");
+            IExpression expected = new LiteralNode("Hello");
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }

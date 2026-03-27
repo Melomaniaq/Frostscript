@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal static class Expression
+    internal static class ExpressionTree
     {
-        private static readonly IExpression expressionTree =
+        private static readonly IFeature global =
             new VariableDecleration(
             new Assignment(
             new Function(
@@ -28,6 +28,6 @@ namespace Frostscript.Expressions
             new Parentheses(
             new Literal()))))))))))))))))));
 
-        public static IExpression ExpressionTree => expressionTree;
+        public static IFeature Global => global;
     }
 }

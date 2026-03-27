@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class Function(IExpression Next) : IExpression
+    internal class Function(IFeature Next) : IFeature
     {
-        public dynamic Interpret(INode node, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
         {
             if (node is FunctionNode function) 
                 return function.Parameters
@@ -23,7 +23,7 @@ namespace Frostscript.Expressions
             else return Next.Interpret(node, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public (IExpression, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.Fun)
                 return Next.Parse(tokens);
@@ -43,7 +43,7 @@ namespace Frostscript.Expressions
             if (newTokens[0].Type is not TokenType.Arrow)
                 return (new ErrorNode("Expected '->' ", newTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
-            var (body, bodyTokens) = Expression.ExpressionTree.Parse([.. newTokens.Skip(1)]);
+            var (body, bodyTokens) = ExpressionTree.ExpressionTree.Parse([.. newTokens.Skip(1)]);
             return (new FunctionNode(parameters, body), bodyTokens);
         }
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class Literal : IExpression
+    internal class Literal : IFeature
     {
         public ParserResult Parse(Token[] tokens)
         {
@@ -28,14 +28,14 @@ namespace Frostscript.Expressions
                 tokens[0],
                 [.. tokens.Skip(1)]);
         }
-        public dynamic Interpret(INode node, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
         {
             if (node is LiteralNode literal) return literal.Value;
             if (node is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
             else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
 
-        public IValidationResult Validate(NodeContext context, IDictionary<string, ValidationVariable> variables)
+        public IValidationResult Validate(NodeContext context, IDictionary<string, VariableData> variables)
         {
             if (context.Node is LiteralNode literal) return new Pass(literal);
             else throw new NotImplementedException();

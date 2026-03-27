@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Frostscript.Internal
 {
-    internal record ParserResult(INode Node, Token[] RemainingTokens)
+    internal record ParserResult(IExpression Node, Token[] RemainingTokens)
     {
     };
 }

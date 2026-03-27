@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Frostscript.Internal
 {
-    internal record ValidationVariable(IDataType DataType, bool Mutable);
+    internal record VariableData(IDataType DataType, bool Mutable);
 }

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Frostscript.Expressions
 {
-    internal class Label(IExpression Next) : IExpression
+    internal class Label(IFeature Next) : IFeature
     {
-        public dynamic Interpret(INode node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
             if (node is LabelNode label) 
                 return variables[label.Label];
@@ -15,7 +15,7 @@ namespace Frostscript.Expressions
                 return Next.Interpret(node, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public (IExpression, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 
                 return (new LabelNode(tokens[0].Literal), [.. tokens.Skip(1)]);
