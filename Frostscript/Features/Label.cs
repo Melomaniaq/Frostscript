@@ -9,18 +9,30 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
         {
-            if (node is LabelNode label) 
+            if (node is LabelExpression label) 
                 return variables[label.Label];
             else 
                 return Next.Interpret(node, variables);
         }
 
-        public (IExpression, Token[]) Parse(Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 
-                return (new LabelNode(tokens[0].Literal), [.. tokens.Skip(1)]);
+                return (new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]);
             else 
                 return Next.Parse(tokens);
+        }
+
+        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        {
+            if (node is LabelNode label)
+            {
+                if (variables.TryGetValue(label.Label, out var variable))
+                    return new Pass(new LabelExpression(label.Label, variable.DataType));
+                else 
+                    return new Fail(label.Token, $"Label '{label.Label}' does not exist within scope");
+            }
+            else return Next.Validate(node, variables);
         }
     }
 }

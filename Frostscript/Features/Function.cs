@@ -1,9 +1,5 @@
 ﻿using Frostscript.Internal;
 using Frostscript.Types;
-using Frostware.Pipe;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Frostscript.Features
 {
@@ -11,7 +7,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression node, IDictionary<string, dynamic> variables)
         {
-            if (node is FunctionNode function) 
+            if (node is FunctionExpression function) 
                 return function.Parameters
                 .Reverse()
                 .Skip(1)
@@ -23,7 +19,7 @@ namespace Frostscript.Features
             else return Next.Interpret(node, variables);
         }
 
-        public (IExpression, Token[]) Parse(Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.Fun)
                 return Next.Parse(tokens);
@@ -45,6 +41,11 @@ namespace Frostscript.Features
 
             var (body, bodyTokens) = ExpressionTree.ExpressionTree.Parse([.. newTokens.Skip(1)]);
             return (new FunctionNode(parameters, body), bodyTokens);
+        }
+
+        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        {
+            throw new NotImplementedException();
         }
     }
 }
