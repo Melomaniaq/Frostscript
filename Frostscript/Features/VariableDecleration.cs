@@ -5,30 +5,25 @@ namespace Frostscript.Features
 {
     internal class VariableDecleration(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (node is VariableNode variableNode)
+            if (expression is VariableExpression variable)
             {
-                variables[variableNode.Label] = ExpressionTree.Interpret(variableNode.Value, variables);
+                variables[variable.Label] = Next.Interpret(variable.Value, variables);
                 return new FSVoid();
             }
-            else return Next.Interpret(node, variables);
+            else return Next.Interpret(expression, variables);
         }
-        public ParserResult Parse(Token[] tokens)
+        public (INode, Token[]) Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
             {
                 if (tokens[1].Type is not TokenType.Label)
                     return (
-                        new NodeContext(new ErrorNode($"Expected Label"), tokens[1]),
+                        new ErrorNode($"Expected Label", tokens[1]),
                         [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]
                     );
-                return new ParserResult(
-                    Node: new ErrorNode($"Expected Label"),
-                    Token: tokens[1],
-                    RemainingTokens: [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]
-                );
-
+              
                 if (tokens[2].Type is not TokenType.SingleEqual)
                     return (new ErrorNode($"Expected '='", tokens[2]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
@@ -36,6 +31,20 @@ namespace Frostscript.Features
                 return (new VariableNode(tokens[1].Literal, value, tokens[0].Type is TokenType.Var, tokens[1]), valueTokens);
             }
             else return Next.Parse(tokens);
+        }
+
+        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        {
+            if (node is VariableNode variable)
+            {
+                return Next.Validate(variable.Value, variables)
+                    .Bind(value =>
+                    {
+                        variables[variable.Label] = new VariableData(value.DataType, variable.Mutable);
+                        return new Pass(new VariableExpression(variable.Label, value, variable.Mutable, new VoidType()));
+                    });
+            }
+            else return Next.Validate(node, variables);
         }
     }
 }
