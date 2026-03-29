@@ -30,7 +30,11 @@ namespace Frostscript.Features
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
+            if (node is ParenthesesNode parentheses)
+                return ExpressionTree.Validate(parentheses.Body, variables)
+                    .Bind(body => new Pass(new ParenthesesExpression(body, body.DataType)));
 
+            else return Next.Validate(node, variables);
         }
     }
 }
