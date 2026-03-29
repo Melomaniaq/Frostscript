@@ -1,14 +1,10 @@
 ﻿using Frostscript.Internal;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Frostscript.Features
 {
     internal class Literal : IFeature
     {
-       
-        public dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
             if (expression is LiteralNode literal) return literal.Value;
             if (expression is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
@@ -41,7 +37,7 @@ namespace Frostscript.Features
 
                 return new Pass(new LiteralExpression(literal, dataType));
             }
-            else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
+            else throw new NotImplementedException("Node could not be resolved. Did you forget to add the expression to the expression tree?");
         }
     }
 }

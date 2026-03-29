@@ -5,7 +5,7 @@ namespace Frostscript.Features
 {
     internal class Assignment(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
             if (expression is AssignmentExpression assignment)
             {

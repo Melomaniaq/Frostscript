@@ -30,10 +30,7 @@ namespace Frostscript.Internal
 
         public void Add(KeyValuePair<TKey, TValue> item) => _closure.Add(item.Key, item.Value);
 
-        public void Clear()
-        {
-            _closure.Clear();
-        }
+        public void Clear() => _closure.Clear();
 
         public bool Contains(KeyValuePair<TKey, TValue> item) => _closure.Contains(item) || globalVariables.Contains(item);
 

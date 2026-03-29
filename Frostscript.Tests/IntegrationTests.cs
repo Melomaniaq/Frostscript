@@ -46,7 +46,7 @@ namespace Frostscript.Tests
         [Fact]
         public void Closure()
         {
-            Assert.Equal(5, Frostscript.Run<int>(@"let x = 2; let add = fun y -> x + y; add 3 "));
+            Assert.Equal(5, Frostscript.Run<int>(@"let x = 2; let add = fun y:num -> x + y; add 3 "));
             Assert.Equal(5, Frostscript.Run<int>(
             @"
                 var x = 2; 

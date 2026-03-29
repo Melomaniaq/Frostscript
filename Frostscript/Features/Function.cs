@@ -5,7 +5,7 @@ namespace Frostscript.Features
 {
     internal class Function(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables)
+        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
             if (expression is FunctionExpression function) 
                 return function.Parameters
@@ -39,7 +39,7 @@ namespace Frostscript.Features
             if (newTokens[0].Type is not TokenType.Arrow)
                 return (new ErrorNode("Expected '->' ", newTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
-            var (body, bodyTokens) = ExpressionTree.ExpressionTree.Parse([.. newTokens.Skip(1)]);
+            var (body, bodyTokens) = ExpressionTree.Parse([.. newTokens.Skip(1)]);
             return (new FunctionNode(parameters, body), bodyTokens);
         }
 

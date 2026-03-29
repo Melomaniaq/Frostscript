@@ -1,13 +1,19 @@
 ﻿using Frostscript.Internal;
 using Frostscript.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Frostscript.Features
 {
     internal class VariableDecleration(IFeature Next) : IFeature
     {
+        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
+        {
+            if (node is VariableNode variableNode)
+            {
+                variables[variableNode.Label] = ExpressionTree.Interpret(variableNode.Value, variables);
+                return new FSVoid();
+            }
+            else return Next.Interpret(node, variables);
+        }
         public ParserResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
@@ -30,16 +36,6 @@ namespace Frostscript.Features
                 return (new VariableNode(tokens[1].Literal, value, tokens[0].Type is TokenType.Var, tokens[1]), valueTokens);
             }
             else return Next.Parse(tokens);
-        }
-
-        public dynamic Interpret(IExpression node, IDictionary<string, object> variables)
-        {
-            if (node is VariableNode variableNode)
-            {
-                variables[variableNode.Label] = ExpressionTree.ExpressionTree.Interpret(variableNode.Value, variables);
-                return new FSVoid();
-            }
-            else return Next.Interpret(node, variables);
         }
     }
 }
