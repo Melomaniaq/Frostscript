@@ -41,7 +41,7 @@ namespace Frostscript.Features
                     .Bind(value =>
                     {
                         variables[variable.Label] = new VariableData(value.DataType, variable.Mutable);
-                        return new Pass(new TypedVariableNode(variable.Label, value, variable.Mutable, new VoidType()));
+                        return new IValidationResult.Pass(new TypedVariableNode(variable.Label, value, variable.Mutable, new VoidType()));
                     });
             }
             else return Next.Validate(node, variables);

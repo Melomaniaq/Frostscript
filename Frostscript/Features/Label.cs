@@ -28,9 +28,9 @@ namespace Frostscript.Features
             if (node is LabelNode label)
             {
                 if (variables.TryGetValue(label.Label, out var variable))
-                    return new Pass(new TypedLabelNode(label.Label, variable.DataType));
+                    return new IValidationResult.Pass(new TypedLabelNode(label.Label, variable.DataType));
                 else 
-                    return new Fail(label.Token, $"Label '{label.Label}' does not exist within scope");
+                    return new IValidationResult.Fail((label.Token, $"Label '{label.Label}' does not exist within scope"));
             }
             else return Next.Validate(node, variables);
         }

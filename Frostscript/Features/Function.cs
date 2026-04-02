@@ -68,7 +68,7 @@ namespace Frostscript.Features
                                )
                             );
 
-                        return new TypedFunctionNode(function.Parameters, body, functionType);
+                        return new TypedFunctionNode(function.Parameters, body, functionType) as ITypedNode;
                     });
             }
             else return Next.Validate(node, variables);

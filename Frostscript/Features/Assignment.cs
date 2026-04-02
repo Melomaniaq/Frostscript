@@ -35,19 +35,21 @@ namespace Frostscript.Features
             if (node is AssignmentNode assignment)
             {
                 if (!variables[assignment.Label].Mutable)
-                    return new Fail(assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to");
+                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to"));
 
                 if (!variables.TryGetValue(assignment.Label, out var variableData))
-                    return new Fail(assignment.Token, $"Variable {assignment.Label} does not exist within scope");
+                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} does not exist within scope"));
 
                 return Next.Validate(assignment.Value, variables)
                     .Bind(value =>
                     {
-                        if (value.DataType == variableData.DataType) return new Pass(new TypedAssignmentNode(assignment.Label, value, new VoidType()));
-                        else return new Fail(
+                        if (value.DataType.Equals(variableData.DataType)) 
+                            return new IValidationResult.Pass(new TypedAssignmentNode(assignment.Label, value, new VoidType())) as IValidationResult;
+                        else 
+                            return new IValidationResult.Fail((
                             assignment.Token,
                             $"Variable {assignment.Label} is of type {variableData.DataType} and cannot be assigned a value of type {value.DataType}"
-                        );
+                        ));
                     });
             }
 

@@ -78,29 +78,29 @@ namespace Frostscript.Features
                                 BinaryType.GreaterOrEqual or
                                 BinaryType.GreaterThan => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new Pass(BinaryOFType(new NumberType())),
-                                    _ => new Fail(
+                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
+                                    _ => new IValidationResult.Fail((
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
-                                    ),
+                                    )),
                                 },
                                 BinaryType.Addition => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new Pass(BinaryOFType(new NumberType())),
-                                    (StringType, StringType) => new Pass(BinaryOFType(new StringType())),
-                                    _ => new Fail(
+                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())),
+                                    (StringType, StringType) => new IValidationResult.Pass(BinaryOFType(new StringType())),
+                                    _ => new IValidationResult.Fail((
                                         binary.Token,
-                                        $"type {left.DataType} cannot be additioned with type {right.DataType}"
-                                    ),
+                                       $"type {left.DataType} cannot be additioned with type {right.DataType}"
+                                    )),
                                 },
-                                BinaryType.Equality or BinaryType.Inequality => new Pass(new TypedBinaryNode(binary.Type, left, right, new BoolType())),
+                                BinaryType.Equality or BinaryType.Inequality => new IValidationResult.Pass(new TypedBinaryNode(binary.Type, left, right, new BoolType())),
                                 BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
                                 {
-                                    (BoolType, BoolType) => new Pass(BinaryOFType(new BoolType())),
-                                    _ => new Fail(
+                                    (BoolType, BoolType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
+                                    _ => new IValidationResult.Fail((
                                         binary.Token,
                                         $"Both sides of {binary.Type} must be a Bool. {left.DataType} and {right.DataType} where given"
-                                    ),
+                                    )),
                                 },
                                 _ => throw new NotImplementedException()
                             };

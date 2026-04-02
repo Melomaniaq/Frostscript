@@ -1,0 +1,36 @@
+﻿using Frostscript.Features;
+using Frostscript.Internal;
+
+namespace Frostscript
+{
+    internal static class Validator
+    {
+        internal static IResult<IExpression[], string> Validate(INode[] ast)
+        {
+            Dictionary<string, VariableData> globalVariables = [];
+
+            return ast
+                .Traverse(node => ExpressionTree.Validate(node, globalVariables))
+                .Map(x => x.Select(Convert).ToArray())
+                .MapFailure(x => 
+                    x.Aggregate("", (errorMessage, newError) => errorMessage + $"[{newError.token.Line}:{newError.token.Character}] {newError.error} \n")
+                );
+        }
+
+        static IExpression Convert(ITypedNode node)
+        {
+            return node switch
+            {
+                TypedBinaryNode binaryNode => new BinaryExpression(binaryNode.Type, Convert(binaryNode.Left), Convert(binaryNode.Right)),
+                TypedVariableNode variableNode => new VariableExpression(variableNode.Label, Convert(variableNode.Value)),
+                TypedLabelNode labelNode => new LabelExpression(labelNode.Label),
+                TypedLiteralNode literalNode => new LiteralExpression(literalNode.Value),
+                TypedAssignmentNode assignmentNode => new AssignmentExpression(assignmentNode.Label, Convert(assignmentNode.Value)),
+                TypedFunctionNode functionNode => new FunctionExpression([.. functionNode.Parameters.Select(x => x.Label)], Convert(functionNode.Body)),
+                TypedCallNode callNode => new CallExpression(Convert(callNode.Left), Convert(callNode.Right)),
+                TypedParenthesesNode parenthesesNode => new ParenthesesExpression(Convert(parenthesesNode.Body)),
+                _ => throw new Exception($"Unhandled node type {node}")
+            };
+        }
+    }
+}
