@@ -12,8 +12,12 @@ namespace Frostscript.Features
                 .Reverse()
                 .Skip(1)
                 .Aggregate(
-                    new FSFunction(function.Parameters.Last(), function.Body, new Closure<string, dynamic>(variables)),
-                    (frostFunc, parameter) => new FSFunction(parameter, new LiteralExpression(frostFunc, new FunctionType(),)), new Closure<string, dynamic>(frostFunc.Closure))
+                    new FSFunction(function.Parameters.Last(), function.Body, new Closure<string, object>(variables)),
+                    (frostFunc, parameter) => new FSFunction(
+                        parameter, 
+                        new LiteralExpression(frostFunc), 
+                        frostFunc.Closure
+                    )
                 );
 
             else return Next.Interpret(expression, variables);
@@ -24,28 +28,50 @@ namespace Frostscript.Features
             if (tokens[0].Type is not TokenType.Fun)
                 return Next.Parse(tokens);
 
-            if (tokens[1].Type is not TokenType.Label )
-                return (new ErrorNode("Expected Parameter",  tokens[1]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
+            try
+            {
+                var parameterTokens = ParameterList.TryParse([.. tokens.Skip(1)], out var parameters).ToArray();
 
-            var parameters =
-                tokens
-                .Skip(1)
-                .TakeWhile(x => x.Type == TokenType.Label)
-                .Select(x => x.Literal as string ?? throw new NullReferenceException())
-                .ToArray();
+                if (parameterTokens[0].Type is not TokenType.Arrow)
+                    return (new ErrorNode("Expected '->' ", parameterTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
 
-            var newTokens = tokens.Skip(parameters.Length + 1).ToArray();
+                var (body, bodyTokens) = ExpressionTree.Parse([.. parameterTokens.Skip(1)]);
+                return (new FunctionNode(parameters, body, tokens[0]), bodyTokens);
 
-            if (newTokens[0].Type is not TokenType.Arrow)
-                return (new ErrorNode("Expected '->' ", newTokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
-
-            var (body, bodyTokens) = ExpressionTree.Parse([.. newTokens.Skip(1)]);
-            return (new FunctionNode(parameters, body), bodyTokens);
+            }
+            catch (Exception e) 
+            {
+                return (new ErrorNode(e.Message, tokens[0]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
+            }
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
-            throw new NotImplementedException();
+            if (node is FunctionNode function)
+            {
+                var closure = new Closure<string, VariableData>(variables);
+
+                foreach (var (label, dataType) in function.Parameters)
+                    closure[label] = new VariableData(dataType, false);
+
+                return Validate(function.Body, closure)
+                    .Map(body =>
+                    {
+                        var functionType = function.Parameters
+                           .Reverse()
+                           .Skip(1)
+                           .Aggregate(
+                               new FunctionType(function.Parameters.Last().dataType, body.DataType),
+                               (frostFunc, parameter) => new FunctionType(
+                                   parameter.dataType,
+                                   frostFunc
+                               )
+                            );
+
+                        return new TypedFunctionNode(function.Parameters, body, functionType);
+                    });
+            }
+            else return Next.Validate(node, variables);
         }
     }
 }

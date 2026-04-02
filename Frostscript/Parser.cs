@@ -6,9 +6,9 @@ namespace Frostscript
 {
     internal static class Parser
     {
-        public static IExpression[] Parse(Token[] tokens, IFeature features)
+        public static ITypedNode[] Parse(Token[] tokens, IFeature features)
         {
-            IExpression[] GenerateNodes(IExpression[] nodes, Token[] tokens)
+            ITypedNode[] GenerateNodes(ITypedNode[] nodes, Token[] tokens)
             {
                 if (tokens.Length > 0)
                 {

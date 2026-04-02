@@ -9,7 +9,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (expression is ParenthesesExpression parentheses)
+            if (expression is TypedParenthesesNode parentheses)
                 return ExpressionTree.Interpret(parentheses.Body, variables);
 
             return Next.Interpret(expression, variables);
@@ -33,7 +33,7 @@ namespace Frostscript.Features
             if (node is ParenthesesNode parentheses)
             {
                 return ExpressionTree.Validate(parentheses.Body, variables)
-                    .Bind(body => new Pass(new ParenthesesExpression(body, body.DataType)));
+                    .Bind(body => new Pass(new TypedParenthesesNode(body, body.DataType)));
             }
             else return Next.Validate(node, variables);
         }

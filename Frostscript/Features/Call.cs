@@ -50,7 +50,7 @@ namespace Frostscript.Features
                             {
                                 FunctionType functionType => (functionType.Parameter == right.DataType) switch
                                 {
-                                    true => new Pass(new CallExpression(left, right, functionType.Body)),
+                                    true => new Pass(new TypedCallNode(left, right, functionType.Body)),
                                     false => new Fail(
                                         call.Token,
                                         $"Function expected a perameter of type {functionType.Parameter} but was given {right.DataType} instead"

@@ -12,7 +12,7 @@ namespace Frostscript.Internal
     internal record LabelNode(string Label, Token Token) : INode;
     internal record LiteralNode(dynamic Value, Token Token) : INode;
     internal record AssignmentNode(string Label, INode Value, Token Token) : INode;
-    internal record FunctionNode(string[] Parameters, INode Body, Token Token) : INode;
+    internal record FunctionNode((string label, IDataType dataType)[] Parameters, INode Body, Token Token) : INode;
     internal record CallNode(INode Left, INode Right, Token Token) : INode;
     internal record ParenthesesNode(INode Body, Token Token) : INode;
 }

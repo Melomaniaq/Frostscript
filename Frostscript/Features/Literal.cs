@@ -35,7 +35,7 @@ namespace Frostscript.Features
                     _ => throw new NotSupportedException()
                 };
 
-                return new Pass(new LiteralExpression(literal, dataType));
+                return new Pass(new TypedLiteralNode(literal, dataType));
             }
             else throw new NotImplementedException("Node could not be resolved. Did you forget to add the expression to the expression tree?");
         }

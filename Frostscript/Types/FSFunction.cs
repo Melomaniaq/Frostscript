@@ -8,19 +8,19 @@ namespace Frostscript.Types
     {
         internal string Parameter { get; }
         internal IExpression Body { get; }
-        internal IDictionary<string, object> Closure { get; }
+        internal Closure<string, object> Closure { get; }
 
-        internal FSFunction(string parameter, IExpression body, IDictionary<string, object> closure)
+        internal FSFunction(string parameter, IExpression body, IDictionary<string, object> variables)
         {
             Parameter = parameter;
             Body = body;
-            Closure = closure;
+            Closure = new Closure<string, object>(variables);
         }
 
         public dynamic Call(dynamic value)
         {
             Closure[Parameter] = value;
-            return ExpressionTree.ExpressionTree.Interpret(Body, Closure);
+            return ExpressionTree.Interpret(Body, Closure);
         }
 
         public T Call<T>(dynamic value) => (T)Call(value);

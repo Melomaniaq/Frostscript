@@ -9,7 +9,7 @@ namespace Frostscript
 {
     internal static class Interpreter
     {
-        internal static dynamic Interpret(IExpression[] ast, IFeature expressions)
+        internal static dynamic Interpret(ITypedNode[] ast, IFeature expressions)
         {
             VariableDictionary globalVariables = [];
 
@@ -19,6 +19,6 @@ namespace Frostscript
             .Last();
         }
 
-        internal static T Interpret<T>(IExpression[] ast, IFeature expressions) => (T)Interpret(ast, expressions);
+        internal static T Interpret<T>(ITypedNode[] ast, IFeature expressions) => (T)Interpret(ast, expressions);
     }
 }

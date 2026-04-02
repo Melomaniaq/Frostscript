@@ -1,7 +1,4 @@
 ﻿using Frostscript.Internal;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -37,6 +34,7 @@ namespace Frostscript.Tests
         [InlineData("<", TokenType.LessThan)]
         [InlineData("<=", TokenType.LessOrEqual)]
         [InlineData(";", TokenType.SemiColon)]
+        [InlineData(":", TokenType.Colon)]
         [InlineData("(", TokenType.ParenthesesOpen)]
         [InlineData(")", TokenType.ParenthesesClose)]
         [InlineData("->", TokenType.Arrow)]
@@ -44,7 +42,9 @@ namespace Frostscript.Tests
         [InlineData("let", TokenType.Let)]
         [InlineData("and", TokenType.And)]
         [InlineData("or", TokenType.Or)]
-        [InlineData("fun", TokenType.Fun)]
+        [InlineData("num", TokenType.Num)]
+        [InlineData("bool", TokenType.Bool)]
+        [InlineData("str", TokenType.Str)]
         internal void OperatorsAndKeywords(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
 
         [Fact]

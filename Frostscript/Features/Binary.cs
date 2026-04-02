@@ -66,7 +66,7 @@ namespace Frostscript.Features
                     .Bind(left => next.Validate(binary.Right, variables)
                         .Bind(right =>
                         {
-                            BinaryExpression BinaryOFType(IDataType dataType) => new (binary.Type, left, right, dataType);
+                            TypedBinaryNode BinaryOFType(IDataType dataType) => new (binary.Type, left, right, dataType);
 
                             return binary.Type switch
                             {
@@ -93,7 +93,7 @@ namespace Frostscript.Features
                                         $"type {left.DataType} cannot be additioned with type {right.DataType}"
                                     ),
                                 },
-                                BinaryType.Equality or BinaryType.Inequality => new Pass(new BinaryExpression(binary.Type, left, right, new BoolType())),
+                                BinaryType.Equality or BinaryType.Inequality => new Pass(new TypedBinaryNode(binary.Type, left, right, new BoolType())),
                                 BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
                                 {
                                     (BoolType, BoolType) => new Pass(BinaryOFType(new BoolType())),

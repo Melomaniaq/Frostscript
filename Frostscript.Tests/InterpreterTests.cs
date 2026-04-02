@@ -1,9 +1,6 @@
 ﻿using Frostscript.Features;
 using Frostscript.Internal;
 using Frostscript.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -13,9 +10,9 @@ namespace Frostscript.Tests
         [Fact]
         public void LiteralString()
         {
-            var node = new LiteralNode("Hello");
+            var Expression = new LiteralExpression("Hello", new StringType());
             var expression = new Literal();
-            Assert.Equal("Hello", expression.Interpret(node, new VariableDictionary()));
+            Assert.Equal("Hello", expression.Interpret(Expression, new VariableDictionary()));
         }
 
         [Theory]
@@ -56,68 +53,68 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.Or, false, false, false])]
         internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
-            var node = new BinaryNode(type, new LiteralNode(left), new LiteralNode(right));
+            var Expression = new BinaryExpression(type, new LiteralExpression(left), new LiteralExpression(right));
             var expression = new Binary(type, new Literal());
-            Assert.Equal(result, expression.Interpret(node, new VariableDictionary()));
+            Assert.Equal(result, expression.Interpret(Expression, new VariableDictionary()));
         }
 
         [Fact]
         internal void VariableReturnsCorrectValue()
         {
-            var node = new VariableNode("myVariable", new LiteralNode(1), true);
-            var expression = new Variable(new Literal());
-            Assert.Equal(new FSVoid(), expression.Interpret(node, new VariableDictionary()));
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1), true);
+            var expression = new VariableDecleration(new Literal());
+            Assert.Equal(new FSVoid(), expression.Interpret(Expression, new VariableDictionary()));
         }
 
         [Fact]
         internal void VariableAssignsNewLabel()
         {
-            var node = new VariableNode("myVariable", new LiteralNode(1), true);
-            var expression = new Variable(new Literal());
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1), true);
+            var expression = new VariableDecleration(new Literal());
             var variables = new VariableDictionary();
-            expression.Interpret(node, variables);
+            expression.Interpret(Expression, variables);
             Assert.Equal(1, variables["myVariable"]);
         }
 
         [Fact]
         internal void Label()
         {
-            var node = new LabelNode("hello");
+            var Expression = new LabelExpression("hello");
             var variables = new VariableDictionary { { "hello", 1 } };
             var expression = new Label(new Literal());
-            Assert.Equal(1, expression.Interpret(node, variables));
+            Assert.Equal(1, expression.Interpret(Expression, variables));
         }
 
         [Fact]
         internal void Assignment()
         {
-            var node = new AssignmentNode("hello", new LiteralNode(2));
-            var variables = new VariableDictionary { { "hello", new LiteralNode(1) } };
+            var Expression = new AssignmentExpression("hello", new LiteralExpression(2));
+            var variables = new VariableDictionary { { "hello", new LiteralExpression(1) } };
             var expression = new Assignment(new Literal());
-            Assert.Equal(new FSVoid(), expression.Interpret(node, variables));
+            Assert.Equal(new FSVoid(), expression.Interpret(Expression, variables));
             Assert.Equal(2, variables["hello"]);
         }
 
         [Fact]
         internal void Function()
         {
-            var node = new FunctionNode(["parameter1", "parameter2"], new LiteralNode(1));
-            var variables = new VariableDictionary { { "variable", new LiteralNode(1) } };
+            var Expression = new FunctionExpression(["parameter1", "parameter2"], new LiteralExpression(1));
+            var variables = new VariableDictionary { { "variable", new LiteralExpression(1) } };
             var expression = new Function(new Literal());
 
-            var firstClosure = new Closure(variables);
+            var firstClosure = new Closure<string, object>(variables);
 
             var expected = new FSFunction(
                 "parameter1",
-                new LiteralNode(new FSFunction(
+                new LiteralExpression(new FSFunction(
                     "parameter2",
-                    new LiteralNode(1),
-                    new Closure(firstClosure)
+                    new LiteralExpression(1),
+                    new Closure<string, object>(firstClosure)
                 )),
                 firstClosure
             );
 
-            Assert.Equivalent(expected, expression.Interpret(node, variables)
+            Assert.Equivalent(expected, expression.Interpret(Expression, variables)
             );
         }
 
@@ -125,27 +122,27 @@ namespace Frostscript.Tests
         internal void Call()
         {
             var variables = new VariableDictionary();
-            var node = new CallNode(
-                new LiteralNode(
+            var Expression = new CallExpression(
+                new LiteralExpression(
                     new FSFunction(
                         "parameter", 
-                        new LabelNode("parameter"), 
+                        new LabelExpression("parameter"), 
                         new VariableDictionary()
                     )
                 ), 
-                new LiteralNode(1)
+                new LiteralExpression(1)
             );
             var expression = new Call(new Label(new Literal()));
 
-            Assert.Equal(1, expression.Interpret(node, variables));
+            Assert.Equal(1, expression.Interpret(Expression, variables));
         }
 
         [Fact]
         internal void Parentheses()
         {
-            var node = new ParenthesesNode(new LiteralNode(1));
+            var Expression = new ParenthesesExpression(new LiteralExpression(1));
             var expression = new Parentheses(new Literal());
-            Assert.Equal(1, expression.Interpret(node, new VariableDictionary()));
+            Assert.Equal(1, expression.Interpret(Expression, new VariableDictionary()));
         }
     }
 }

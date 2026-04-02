@@ -23,8 +23,12 @@
         Fun,
         Arrow,
         SemiColon,
+        Colon,
         ParenthesesOpen,
-        ParenthesesClose
+        ParenthesesClose,
+        Num,
+        Bool,
+        Str
     }
 
     internal record struct Token(TokenType Type, int Line, int Character, dynamic? Literal = null);

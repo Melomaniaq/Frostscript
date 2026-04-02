@@ -9,7 +9,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (expression is LabelExpression label) 
+            if (expression is TypedLabelNode label) 
                 return variables[label.Label];
             else 
                 return Next.Interpret(expression, variables);
@@ -28,7 +28,7 @@ namespace Frostscript.Features
             if (node is LabelNode label)
             {
                 if (variables.TryGetValue(label.Label, out var variable))
-                    return new Pass(new LabelExpression(label.Label, variable.DataType));
+                    return new Pass(new TypedLabelNode(label.Label, variable.DataType));
                 else 
                     return new Fail(label.Token, $"Label '{label.Label}' does not exist within scope");
             }

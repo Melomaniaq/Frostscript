@@ -11,7 +11,7 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
             var expression = new Literal();
-            IExpression expected = new LiteralNode("Hello");
+            ITypedNode expected = new LiteralNode("Hello");
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -39,7 +39,7 @@ namespace Frostscript.Tests
                 new Token(@operator, 0, 4), 
                 new Token(TokenType.Literal, 0, 4, 5)];
             var expression = new Binary(type, new Literal());
-            var expected = new BinaryNode(type, new LiteralNode(1), new BinaryNode(type, new LiteralNode(3), new LiteralNode(5)));
+            var expected = new BinaryNode(type, new LiteralNode(1, new()), new BinaryNode(type, new LiteralNode(3, new()), new LiteralNode(5, new()), new()), new());
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -49,7 +49,7 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1)];
             var expression = new Binary(BinaryType.Addition, new Literal());
-            var expected = new LiteralNode(1);
+            var expected = new LiteralNode(1, new());
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -67,8 +67,8 @@ namespace Frostscript.Tests
                 new Token(TokenType.Literal, 0, 3, 1)
             ];
 
-            var expression = new Variable(new Literal());
-            var expected = new VariableNode("myVariable", new LiteralNode(1), mutable);
+            var expression = new VariableDecleration(new Literal());
+            var expected = new VariableNode("myVariable", new LiteralNode(1, new()), mutable, new());
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -165,7 +165,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Function(new Literal());
-            var expected = new FunctionNode(["parameter"], new LiteralNode(1));
+            var expected = new FunctionNode([("parameter", new UnknownType())], new LiteralNode(1, tokens[3]), tokens[0]);
             var (actual, remainingTokens) = expression.Parse(tokens);
 
             Assert.Empty(remainingTokens);
@@ -183,7 +183,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new CallNode(new CallNode(new LabelNode("func"), new LiteralNode(1)), new LiteralNode(2));
+            var expected = new CallNode(new CallNode(new LabelNode("func", tokens[0]), new LiteralNode(1, tokens[1]), tokens[0]), new LiteralNode(2, tokens[2]), tokens[0]);
 
 
             var (actual, remainingTokens) = expression.Parse(tokens);
@@ -203,7 +203,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new CallNode(new LabelNode("func"), new LiteralNode(1));
+            var expected = new CallNode(new LabelNode("func", tokens[0]), new LiteralNode(1, tokens[1]), tokens[0]);
 
             var (actual, remainingTokens) = expression.Parse(tokens);
 
@@ -221,7 +221,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new LabelNode("func");
+            var expected = new LabelNode("func", tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -235,7 +235,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new LabelNode("func");
+            var expected = new LabelNode("func", tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -251,7 +251,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Parentheses(new Literal());
-            var expected = new ParenthesesNode(new LiteralNode(1));
+            var expected = new ParenthesesNode(new LiteralNode(1, tokens[1]), tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }

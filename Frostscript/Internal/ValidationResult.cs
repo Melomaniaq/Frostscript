@@ -4,7 +4,7 @@ namespace Frostscript.Internal
 {
     internal interface IValidationResult;
 
-    internal sealed record Pass(IExpression Expression) : IValidationResult;
+    internal sealed record Pass(ITypedNode Expression) : IValidationResult;
     internal sealed record Fail(Token Token, params string[] Errors) : IValidationResult;
 
     internal static class IValidationResultExtentions
@@ -24,14 +24,14 @@ namespace Frostscript.Internal
             _ => throw new InvalidOperationException("Unexpected validation result")
         };
 
-        public static IValidationResult Map(this IValidationResult result, Func<IExpression, IExpression> mapFunc) => result switch
+        public static IValidationResult Map(this IValidationResult result, Func<ITypedNode, ITypedNode> mapFunc) => result switch
         {
             Pass pass => new Pass(mapFunc(pass.Expression)),
             Fail fail => fail,
             _ => throw new InvalidOperationException("Unexpected validation result")
         };
 
-        public static IValidationResult Bind(this IValidationResult result, Func<IExpression, IValidationResult> bindFunc) => result switch
+        public static IValidationResult Bind(this IValidationResult result, Func<ITypedNode, IValidationResult> bindFunc) => result switch
         {
             Pass pass => bindFunc(pass.Expression),
             Fail fail => fail,
