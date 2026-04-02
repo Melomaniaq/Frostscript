@@ -6,8 +6,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (expression is LiteralNode literal) return literal.Value;
-            if (expression is ErrorNode error) throw new Exception($"Unhandled Parsing Error: {error.Error}");
+            if (expression is LiteralExpression literal) return literal.Value;
             else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
         public (INode, Token[]) Parse(Token[] tokens)
@@ -35,8 +34,9 @@ namespace Frostscript.Features
                     _ => throw new NotSupportedException()
                 };
 
-                return new IValidationResult.Pass(new TypedLiteralNode(literal, dataType));
+                return new IValidationResult.Pass(new TypedLiteralNode(literal.Value, dataType));
             }
+            if (node is ErrorNode error) return new IValidationResult.Fail((error.Token, error.Error));
             else throw new NotImplementedException("Node could not be resolved. Did you forget to add the expression to the expression tree?");
         }
     }

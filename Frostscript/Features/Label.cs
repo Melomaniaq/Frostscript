@@ -9,7 +9,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (expression is TypedLabelNode label) 
+            if (expression is LabelExpression label) 
                 return variables[label.Label];
             else 
                 return Next.Interpret(expression, variables);
