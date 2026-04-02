@@ -1,7 +1,4 @@
 ﻿using Frostscript.Internal;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Frostscript.Features
 {
@@ -9,7 +6,7 @@ namespace Frostscript.Features
     {
         public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
         {
-            if (expression is TypedParenthesesNode parentheses)
+            if (expression is ParenthesesExpression parentheses)
                 return ExpressionTree.Interpret(parentheses.Body, variables);
 
             return Next.Interpret(expression, variables);

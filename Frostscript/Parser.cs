@@ -6,13 +6,13 @@ namespace Frostscript
 {
     internal static class Parser
     {
-        public static ITypedNode[] Parse(Token[] tokens, IFeature features)
+        public static INode[] Parse(Token[] tokens)
         {
-            ITypedNode[] GenerateNodes(ITypedNode[] nodes, Token[] tokens)
+            INode[] GenerateNodes(INode[] nodes, Token[] tokens)
             {
                 if (tokens.Length > 0)
                 {
-                    var (node, newTokens) = features.Parse(tokens);
+                    var (node, newTokens) = ExpressionTree.Parse(tokens);
                     return GenerateNodes([.. nodes.Append(node)], newTokens);
                 }
                 else return nodes;

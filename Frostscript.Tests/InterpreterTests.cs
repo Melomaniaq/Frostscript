@@ -10,7 +10,7 @@ namespace Frostscript.Tests
         [Fact]
         public void LiteralString()
         {
-            var Expression = new LiteralExpression("Hello", new StringType());
+            var Expression = new LiteralExpression("Hello");
             var expression = new Literal();
             Assert.Equal("Hello", expression.Interpret(Expression, new VariableDictionary()));
         }
@@ -61,7 +61,7 @@ namespace Frostscript.Tests
         [Fact]
         internal void VariableReturnsCorrectValue()
         {
-            var Expression = new VariableExpression("myVariable", new LiteralExpression(1), true);
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
             Assert.Equal(new FSVoid(), expression.Interpret(Expression, new VariableDictionary()));
         }
@@ -69,7 +69,7 @@ namespace Frostscript.Tests
         [Fact]
         internal void VariableAssignsNewLabel()
         {
-            var Expression = new VariableExpression("myVariable", new LiteralExpression(1), true);
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
             var variables = new VariableDictionary();
             expression.Interpret(Expression, variables);

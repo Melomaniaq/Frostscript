@@ -8,15 +8,16 @@ namespace Frostscript
         public static T Run<T>(string frostscript)
         {
             return Lexer.Lex(frostscript)
-                .Pipe(tokens => Parser.Parse(tokens, ExpressionTree.Global))
-                .Pipe(nodes => Interpreter.Interpret<T>(nodes, ExpressionTree.Global));
+                .Pipe(Parser.Parse)
+                .Pipe()
+                .Pipe(nodes => Interpreter.Interpret<T>(nodes));
         }
 
         public static void Run(string frostscript)
         {
             Lexer.Lex(frostscript)
-            .Pipe(tokens => Parser.Parse(tokens, ExpressionTree.Global))
-            .Pipe(nodes => Interpreter.Interpret(nodes, ExpressionTree.Global));
+            .Pipe(tokens => Parser.Parse(tokens)
+            .Pipe(nodes => Interpreter.Interpret(nodes);
         }
     }
 }

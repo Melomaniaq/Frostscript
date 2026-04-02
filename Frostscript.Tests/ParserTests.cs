@@ -11,7 +11,7 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
             var expression = new Literal();
-            ITypedNode expected = new LiteralNode("Hello");
+            var expected = new LiteralNode("Hello", tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -35,11 +35,20 @@ namespace Frostscript.Tests
             [
                 new Token(TokenType.Literal, 0, 0, 1), 
                 new Token(@operator, 0, 2), 
-                new Token(TokenType.Literal, 0, 4, 3), 
+                new Token(TokenType.Literal, 0, 3, 3), 
                 new Token(@operator, 0, 4), 
-                new Token(TokenType.Literal, 0, 4, 5)];
+                new Token(TokenType.Literal, 0, 5, 5)];
             var expression = new Binary(type, new Literal());
-            var expected = new BinaryNode(type, new LiteralNode(1, new()), new BinaryNode(type, new LiteralNode(3, new()), new LiteralNode(5, new()), new()), new());
+            var expected = new BinaryNode(
+                type, 
+                new LiteralNode(1, tokens[0]), 
+                new BinaryNode(
+                    type, 
+                    new LiteralNode(3, tokens[3]), 
+                    new LiteralNode(5, tokens[5]), 
+                    tokens[3]),
+                tokens[0]
+            );
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -68,7 +77,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new VariableDecleration(new Literal());
-            var expected = new VariableNode("myVariable", new LiteralNode(1, new()), mutable, new());
+            var expected = new VariableNode("myVariable", new LiteralNode(1, tokens[3]), mutable, tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -85,7 +94,7 @@ namespace Frostscript.Tests
                 new Token(TokenType.Literal, 0, 3, 1)
             ];
 
-            var expression = new Variable(new Literal());
+            var expression = new VariableDecleration(new Literal());
             Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
         }
 
@@ -101,7 +110,7 @@ namespace Frostscript.Tests
                 new Token(TokenType.Literal, 0, 3, 1)
             ];
 
-            var expression = new Variable(new Literal());
+            var expression = new VariableDecleration(new Literal());
             Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
         }
 
@@ -111,7 +120,7 @@ namespace Frostscript.Tests
 
             Token[] tokens = [new Token(TokenType.Label, 0, 0, "hello")];
             var expression = new Label(new Literal());
-            var expected = new LabelNode("hello");
+            var expected = new LabelNode("hello", tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -127,7 +136,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Assignment(new Literal());
-            var expected = new AssignmentNode("hello", new LiteralNode(1));
+            var expected = new AssignmentNode("hello", new LiteralNode(1, tokens[2]), tokens[1]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -139,14 +148,32 @@ namespace Frostscript.Tests
             [
                 new Token(TokenType.Fun, 0, 0),
                 new Token(TokenType.Label, 0, 1, "parameter1"),
-                new Token(TokenType.Label, 0, 1, "parameter2"),
-                new Token(TokenType.Label, 0, 1, "parameter3"),
-                new Token(TokenType.Arrow, 0, 2),
-                new Token(TokenType.Literal, 0, 3, 1)
+                new Token(TokenType.ParenthesesOpen, 0, 2),
+                new Token(TokenType.Num, 0, 3),
+                new Token(TokenType.ParenthesesClose, 0, 4),
+                new Token(TokenType.Label, 0, 5, "parameter2"),
+                new Token(TokenType.ParenthesesOpen, 0, 6),
+                new Token(TokenType.Num, 0, 7),
+                new Token(TokenType.ParenthesesClose, 0, 8),
+                new Token(TokenType.Label, 0, 9, "parameter3"),
+                new Token(TokenType.ParenthesesOpen, 0, 10),
+                new Token(TokenType.Num, 0, 11),
+                new Token(TokenType.ParenthesesClose, 0, 12),
+                new Token(TokenType.Arrow, 0, 13),
+                new Token(TokenType.Literal, 0, 3, 14)
             ];
 
             var expression = new Function(new Literal());
-            var expected = new FunctionNode(["parameter1", "parameter2", "parameter3"], new LiteralNode(1));
+            var expected = new FunctionNode(
+                [
+                    ("parameter1", new NumberType()), 
+                    ("parameter2", new NumberType()), 
+                    ("parameter3", new NumberType())
+                ], 
+                new LiteralNode(1, tokens[14]), 
+                tokens[0]
+            );
+
             var (actual, remainingTokens) = expression.Parse(tokens);
 
             Assert.Empty(remainingTokens);
@@ -160,12 +187,15 @@ namespace Frostscript.Tests
             [
                 new Token(TokenType.Fun, 0, 0),
                 new Token(TokenType.Label, 0, 1, "parameter"),
-                new Token(TokenType.Arrow, 0, 2),
-                new Token(TokenType.Literal, 0, 3, 1)
+                new Token(TokenType.ParenthesesOpen, 0, 2),
+                new Token(TokenType.Num, 0, 3),
+                new Token(TokenType.ParenthesesClose, 0, 4),
+                new Token(TokenType.Arrow, 0, 5),
+                new Token(TokenType.Literal, 0, 6, 1)
             ];
 
             var expression = new Function(new Literal());
-            var expected = new FunctionNode([("parameter", new UnknownType())], new LiteralNode(1, tokens[3]), tokens[0]);
+            var expected = new FunctionNode([("parameter", new NumberType())], new LiteralNode(1, tokens[6]), tokens[0]);
             var (actual, remainingTokens) = expression.Parse(tokens);
 
             Assert.Empty(remainingTokens);
