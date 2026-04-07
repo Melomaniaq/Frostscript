@@ -44,7 +44,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        public void Closure()
+        public void ClosureNoMutation()
         {
             Assert.Equal(5, Frostscript.Run<int>(
             @"
@@ -53,6 +53,12 @@ namespace Frostscript.Tests
                     x + y; 
                 add 3
             "));
+        }
+
+        [Fact]
+        public void ClosureMutation()
+        {
+
             Assert.Equal(5, Frostscript.Run<int>(
             @"
                 var x = 2; 

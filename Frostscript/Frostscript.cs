@@ -1,5 +1,4 @@
-﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Internal;
 using Frostware.Pipe;
 
 namespace Frostscript
