@@ -20,7 +20,6 @@ namespace Frostscript
             };
         }
 
-
         public static void Run(string frostscript) => Run<object>(frostscript);
     }
 }
