@@ -1,4 +1,4 @@
-﻿using Frostscript.Internal;
+﻿using Frostscript.Domain.Internal;
 using Frostware.Pipe;
 
 namespace Frostscript

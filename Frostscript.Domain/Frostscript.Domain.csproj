@@ -6,12 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ImportGroup>
-  </ImportGroup>
-	
   <ItemGroup>
-    <ProjectReference Include="..\Frostscript.Domain\Frostscript.Domain.csproj" />
-	<InternalsVisibleTo Include="Frostscript.Tests"/>
+    <PackageReference Include="Frostware.Pipe" Version="1.0.0" />
   </ItemGroup>
-
+	
 </Project>

@@ -1,5 +1,5 @@
-﻿using Frostscript.Features;
-using Frostscript.Internal;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Internal;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -29,7 +29,7 @@ namespace Frostscript.Tests
         [InlineData(TokenType.LessOrEqual, BinaryType.LessOrEqual)]
         [InlineData(TokenType.And, BinaryType.And)]
         [InlineData(TokenType.Or, BinaryType.Or)]
-        internal void Binary(TokenType @operator, BinaryType type)
+        public void Binary(TokenType @operator, BinaryType type)
         {
             Token[] tokens = 
             [
@@ -44,10 +44,10 @@ namespace Frostscript.Tests
                 new LiteralNode(1, tokens[0]), 
                 new BinaryNode(
                     type, 
-                    new LiteralNode(3, tokens[3]), 
-                    new LiteralNode(5, tokens[5]), 
+                    new LiteralNode(3, tokens[2]), 
+                    new LiteralNode(5, tokens[4]), 
                     tokens[3]),
-                tokens[0]
+                tokens[1]
             );
 
             Assert.Equal((expected, []), expression.Parse(tokens));
@@ -58,7 +58,7 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1)];
             var expression = new Binary(BinaryType.Addition, new Literal());
-            var expected = new LiteralNode(1, new());
+            var expected = new LiteralNode(1, tokens[0]);
 
             Assert.Equal((expected, []), expression.Parse(tokens));
         }
@@ -160,7 +160,7 @@ namespace Frostscript.Tests
                 new Token(TokenType.Num, 0, 11),
                 new Token(TokenType.ParenthesesClose, 0, 12),
                 new Token(TokenType.Arrow, 0, 13),
-                new Token(TokenType.Literal, 0, 3, 14)
+                new Token(TokenType.Literal, 0, 14, 1)
             ];
 
             var expression = new Function(new Literal());
@@ -213,13 +213,20 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new CallNode(new CallNode(new LabelNode("func", tokens[0]), new LiteralNode(1, tokens[1]), tokens[0]), new LiteralNode(2, tokens[2]), tokens[0]);
+            var expected = new CallNode(
+                new CallNode(
+                    new LabelNode("func", tokens[0]), 
+                    new LiteralNode(1, tokens[1]),
+                    tokens[0]),
+                new LiteralNode(2, tokens[2]),
+                tokens[0]
+            );
 
 
             var (actual, remainingTokens) = expression.Parse(tokens);
 
             Assert.Empty(remainingTokens);
-            Assert.Equivalent(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]

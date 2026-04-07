@@ -1,5 +1,5 @@
-﻿using Frostscript.Features;
-using Frostscript.Internal;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Internal;
 
 namespace Frostscript
 {

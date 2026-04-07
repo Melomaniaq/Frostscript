@@ -1,6 +1,6 @@
-﻿using Frostscript.Features;
-using Frostscript.Internal;
-using Frostscript.Types;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Internal;
+using Frostscript.Domain.Types;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -51,7 +51,7 @@ namespace Frostscript.Tests
         [InlineData([BinaryType.Or, false, true, true])]
         [InlineData([BinaryType.Or, true, true, true])]
         [InlineData([BinaryType.Or, false, false, false])]
-        internal void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
+        public void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
         {
             var Expression = new BinaryExpression(type, new LiteralExpression(left), new LiteralExpression(right));
             var expression = new Binary(type, new Literal());
@@ -59,7 +59,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void VariableReturnsCorrectValue()
+        public void VariableReturnsCorrectValue()
         {
             var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
@@ -67,7 +67,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void VariableAssignsNewLabel()
+        public void VariableAssignsNewLabel()
         {
             var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
@@ -77,7 +77,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void Label()
+        public void Label()
         {
             var Expression = new LabelExpression("hello");
             var variables = new VariableDictionary { { "hello", 1 } };
@@ -86,7 +86,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void Assignment()
+        public void Assignment()
         {
             var Expression = new AssignmentExpression("hello", new LiteralExpression(2));
             var variables = new VariableDictionary { { "hello", new LiteralExpression(1) } };
@@ -96,7 +96,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void Function()
+        public void Function()
         {
             var Expression = new FunctionExpression(["parameter1", "parameter2"], new LiteralExpression(1));
             var variables = new VariableDictionary { { "variable", new LiteralExpression(1) } };
@@ -119,7 +119,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void Call()
+        public void Call()
         {
             var variables = new VariableDictionary();
             var Expression = new CallExpression(
@@ -138,7 +138,7 @@ namespace Frostscript.Tests
         }
 
         [Fact]
-        internal void Parentheses()
+        public void Parentheses()
         {
             var Expression = new ParenthesesExpression(new LiteralExpression(1));
             var expression = new Parentheses(new Literal());
