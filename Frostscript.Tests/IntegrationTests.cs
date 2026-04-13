@@ -58,7 +58,6 @@ namespace Frostscript.Tests
         [Fact]
         public void ClosureMutation()
         {
-
             Assert.Equal(5, Frostscript.Run<int>(
             @"
                 var x = 2; 

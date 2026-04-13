@@ -1,6 +1,5 @@
 ﻿using Frostscript.Domain.Features;
 using Frostscript.Domain.Internal;
-using System.Linq;
 
 namespace Frostscript
 {
