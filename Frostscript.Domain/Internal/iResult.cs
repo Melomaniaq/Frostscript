@@ -24,6 +24,13 @@ namespace Frostscript.Domain.Internal
             _ => throw new InvalidOperationException("Unexpected validation result")
         };
 
+        public static IResult<TPass, TResult> BindFailure<TPass, TFail, TResult>(this IResult<TPass, TFail> result, Func<TFail, IResult<TPass, TResult>> bindFunc) => result switch
+        {
+            IResult<TPass, TFail>.Pass pass => new IResult<TPass, TResult>.Pass(pass.Value),
+            IResult<TPass, TFail>.Fail fail => bindFunc(fail.Value),
+            _ => throw new InvalidOperationException("Unexpected validation result")
+        };
+
         public static IResult<TResult, TFail> Bind<TPass, TFail, TResult>(this IResult<TPass, TFail> result, Func<TPass, IResult<TResult, TFail>> bindFunc) => result switch
         {
             IResult<TPass, TFail>.Pass pass => bindFunc(pass.Value),

@@ -12,7 +12,7 @@ namespace Frostscript.Tests
         {
             var Expression = new LiteralExpression("Hello");
             var expression = new Literal();
-            Assert.Equal("Hello", expression.Interpret(Expression, new VariableDictionary()));
+            Assert.Equal("Hello", expression.Interpret(Expression, new Dictionary<string, object>()));
         }
 
         [Theory]
@@ -55,7 +55,7 @@ namespace Frostscript.Tests
         {
             var Expression = new BinaryExpression(type, new LiteralExpression(left), new LiteralExpression(right));
             var expression = new Binary(type, new Literal());
-            Assert.Equal(result, expression.Interpret(Expression, new VariableDictionary()));
+            Assert.Equal(result, expression.Interpret(Expression, new Dictionary<string, object>()));
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Frostscript.Tests
         {
             var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
-            Assert.Equal(new FSVoid(), expression.Interpret(Expression, new VariableDictionary()));
+            Assert.Equal(new FSVoid(), expression.Interpret(Expression, new Dictionary<string, object>()));
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Frostscript.Tests
         {
             var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
             var expression = new VariableDecleration(new Literal());
-            var variables = new VariableDictionary();
+            var variables = new Dictionary<string, object>();
             expression.Interpret(Expression, variables);
             Assert.Equal(1, variables["myVariable"]);
         }
@@ -80,7 +80,7 @@ namespace Frostscript.Tests
         public void Label()
         {
             var Expression = new LabelExpression("hello");
-            var variables = new VariableDictionary { { "hello", 1 } };
+            var variables = new Dictionary<string, object> { { "hello", 1 } };
             var expression = new Label(new Literal());
             Assert.Equal(1, expression.Interpret(Expression, variables));
         }
@@ -89,7 +89,7 @@ namespace Frostscript.Tests
         public void Assignment()
         {
             var Expression = new AssignmentExpression("hello", new LiteralExpression(2));
-            var variables = new VariableDictionary { { "hello", new LiteralExpression(1) } };
+            var variables = new Dictionary<string, object> { { "hello", new LiteralExpression(1) } };
             var expression = new Assignment(new Literal());
             Assert.Equal(new FSVoid(), expression.Interpret(Expression, variables));
             Assert.Equal(2, variables["hello"]);
@@ -99,7 +99,7 @@ namespace Frostscript.Tests
         public void Function()
         {
             var Expression = new FunctionExpression(["parameter1", "parameter2"], new LiteralExpression(1));
-            var variables = new VariableDictionary { { "variable", new LiteralExpression(1) } };
+            var variables = new Dictionary<string, object> { { "variable", new LiteralExpression(1) } };
             var expression = new Function(new Literal());
 
             var firstClosure = new Closure<string, object>(variables);
@@ -121,13 +121,13 @@ namespace Frostscript.Tests
         [Fact]
         public void Call()
         {
-            var variables = new VariableDictionary();
+            var variables = new Dictionary<string, object>();
             var Expression = new CallExpression(
                 new LiteralExpression(
                     new FSFunction(
                         "parameter", 
                         new LabelExpression("parameter"), 
-                        new VariableDictionary()
+                        new Dictionary<string, object>()
                     )
                 ), 
                 new LiteralExpression(1)
@@ -142,7 +142,7 @@ namespace Frostscript.Tests
         {
             var Expression = new ParenthesesExpression(new LiteralExpression(1));
             var expression = new Parentheses(new Literal());
-            Assert.Equal(1, expression.Interpret(Expression, new VariableDictionary()));
+            Assert.Equal(1, expression.Interpret(Expression, new Dictionary<string, object>()));
         }
     }
 }

@@ -72,13 +72,20 @@ namespace Frostscript.Domain.Features
                             {
                                 BinaryType.Subtraction or
                                 BinaryType.Multiplication or
-                                BinaryType.Division or
+                                BinaryType.Division => (left.DataType, right.DataType) switch
+                                {
+                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
+                                    _ => new IValidationResult.Fail((
+                                        binary.Token,
+                                        $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
+                                    )),
+                                },
                                 BinaryType.LessThan or
                                 BinaryType.LessOrEqual or
                                 BinaryType.GreaterOrEqual or
                                 BinaryType.GreaterThan => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
+                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
                                     _ => new IValidationResult.Fail((
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"

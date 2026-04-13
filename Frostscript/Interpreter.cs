@@ -7,7 +7,7 @@ namespace Frostscript
     {
         internal static dynamic Interpret(IExpression[] ast)
         {
-            VariableDictionary globalVariables = [];
+            Dictionary<string, object> globalVariables = [];
 
             return ast
                 .Select(x => ExpressionTree.Interpret(x, globalVariables))
