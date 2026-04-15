@@ -1,19 +1,22 @@
-﻿using Frostscript.Expressions;
-using Frostscript.Nodes;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Internal;
 
 namespace Frostscript
 {
     internal static class Interpreter
     {
-        internal static T Interpret<T>(INode[] ast, IExpression expressions)
+        internal static dynamic Interpret(IExpression[] ast)
         {
+            Dictionary<string, object> globalVariables = [];
+
             return ast
-                .Select(x => (T)expressions.Interpret(x))
+                .Select(x => ExpressionTree.Interpret(x, globalVariables))
+                .ToArray()
                 .Last();
         }
+
+        internal static T Interpret<T>(IExpression[] ast) => (T)Interpret(ast);
+
+       
     }
 }

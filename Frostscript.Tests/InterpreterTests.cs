@@ -1,8 +1,6 @@
-﻿using Frostscript.Expressions;
-using Frostscript.Nodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Internal;
+using Frostscript.Domain.Types;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -12,17 +10,139 @@ namespace Frostscript.Tests
         [Fact]
         public void LiteralString()
         {
-            INode[] nodes = [new LiteralNode("Hello")];
-            var expression = new Literal(new Error());
-            Assert.Equal("Hello", Interpreter.Interpret<string>(nodes, expression));
+            var Expression = new LiteralExpression("Hello");
+            var expression = new Literal();
+            Assert.Equal("Hello", expression.Interpret(Expression, new Dictionary<string, object>()));
+        }
+
+        [Theory]
+        [InlineData([BinaryType.Addition, 1, 2, 3])]
+        [InlineData([BinaryType.Subtraction, 1, 2, -1])]
+        [InlineData([BinaryType.Multiplication, 2, 3, 6])]
+        [InlineData([BinaryType.Division, 6, 3, 2])]
+
+        [InlineData([BinaryType.Equality, 1, 1, true])]
+        [InlineData([BinaryType.Equality, 1, 2, false])]
+
+        [InlineData([BinaryType.Inequality, 1, 1, false])]
+        [InlineData([BinaryType.Inequality, 1, 2, true])]
+
+        [InlineData([BinaryType.GreaterThan, 1, 2, false])]
+        [InlineData([BinaryType.GreaterThan, 2, 1, true])]
+        [InlineData([BinaryType.GreaterThan, 1, 1, false])]
+
+        [InlineData([BinaryType.GreaterOrEqual, 1, 2, false])]
+        [InlineData([BinaryType.GreaterOrEqual, 2, 1, true])]
+        [InlineData([BinaryType.GreaterOrEqual, 1, 1, true])]
+
+        [InlineData([BinaryType.LessThan, 1, 2, true])]
+        [InlineData([BinaryType.LessThan, 2, 1, false])]
+        [InlineData([BinaryType.LessThan, 1, 1, false])]
+
+        [InlineData([BinaryType.LessOrEqual, 1, 2, true])]
+        [InlineData([BinaryType.LessOrEqual, 2, 1, false])]
+        [InlineData([BinaryType.LessOrEqual, 1, 1, true])]
+
+        [InlineData([BinaryType.And, true, true, true])]
+        [InlineData([BinaryType.And, true, false, false])]
+        [InlineData([BinaryType.And, false, false, false])]
+
+        [InlineData([BinaryType.Or, true, false, true])]
+        [InlineData([BinaryType.Or, false, true, true])]
+        [InlineData([BinaryType.Or, true, true, true])]
+        [InlineData([BinaryType.Or, false, false, false])]
+        public void Binary(BinaryType type, dynamic left, dynamic right, dynamic result)
+        {
+            var Expression = new BinaryExpression(type, new LiteralExpression(left), new LiteralExpression(right));
+            var expression = new Binary(type, new Literal());
+            Assert.Equal(result, expression.Interpret(Expression, new Dictionary<string, object>()));
         }
 
         [Fact]
-        public void Binary()
+        public void VariableReturnsCorrectValue()
         {
-            INode[] nodes = [new BinaryNode(BinaryType.Addition, new LiteralNode(1), new LiteralNode(2))];
-            var expression = new Binary([TokenType.Plus], new Literal(new Error()));
-            Assert.Equal(3, Interpreter.Interpret<int>(nodes, expression));
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
+            var expression = new VariableDecleration(new Literal());
+            Assert.Equal(new FSVoid(), expression.Interpret(Expression, new Dictionary<string, object>()));
+        }
+
+        [Fact]
+        public void VariableAssignsNewLabel()
+        {
+            var Expression = new VariableExpression("myVariable", new LiteralExpression(1));
+            var expression = new VariableDecleration(new Literal());
+            var variables = new Dictionary<string, object>();
+            expression.Interpret(Expression, variables);
+            Assert.Equal(1, variables["myVariable"]);
+        }
+
+        [Fact]
+        public void Label()
+        {
+            var Expression = new LabelExpression("hello");
+            var variables = new Dictionary<string, object> { { "hello", 1 } };
+            var expression = new Label(new Literal());
+            Assert.Equal(1, expression.Interpret(Expression, variables));
+        }
+
+        [Fact]
+        public void Assignment()
+        {
+            var Expression = new AssignmentExpression("hello", new LiteralExpression(2));
+            var variables = new Dictionary<string, object> { { "hello", new LiteralExpression(1) } };
+            var expression = new Assignment(new Literal());
+            Assert.Equal(new FSVoid(), expression.Interpret(Expression, variables));
+            Assert.Equal(2, variables["hello"]);
+        }
+
+        [Fact]
+        public void Function()
+        {
+            var Expression = new FunctionExpression(["parameter1", "parameter2"], new LiteralExpression(1));
+            var variables = new Dictionary<string, object> { { "variable", new LiteralExpression(1) } };
+            var expression = new Function(new Literal());
+
+            var firstClosure = new Closure<string, object>(variables);
+
+            var expected = new FSFunction(
+                "parameter1",
+                new LiteralExpression(new FSFunction(
+                    "parameter2",
+                    new LiteralExpression(1),
+                    new Closure<string, object>(firstClosure)
+                )),
+                firstClosure
+            );
+
+            Assert.Equivalent(expected, expression.Interpret(Expression, variables)
+            );
+        }
+
+        [Fact]
+        public void Call()
+        {
+            var variables = new Dictionary<string, object>();
+            var Expression = new CallExpression(
+                new LiteralExpression(
+                    new FSFunction(
+                        "parameter", 
+                        new LabelExpression("parameter"), 
+                        new Dictionary<string, object>()
+                    )
+                ), 
+                new LiteralExpression(1)
+            );
+            var expression = new Call(new Label(new Literal()));
+
+            Assert.Equal(1, expression.Interpret(Expression, variables));
+        }
+
+        [Fact]
+        public void Parentheses()
+        {
+            var Expression = new ParenthesesExpression(new LiteralExpression(1));
+            var expression = new Parentheses(new Literal());
+            Assert.Equal(1, expression.Interpret(Expression, new Dictionary<string, object>()));
         }
     }
 }

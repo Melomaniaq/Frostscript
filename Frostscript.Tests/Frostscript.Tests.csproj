@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Frostscript.Domain\Frostscript.Domain.csproj" />
     <ProjectReference Include="..\Frostscript\Frostscript.csproj" />
   </ItemGroup>
 

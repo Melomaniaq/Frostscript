@@ -1,4 +1,4 @@
-﻿using Frostscript.Expressions;
+﻿using Frostscript.Domain.Internal;
 using Frostware.Pipe;
 
 namespace Frostscript
@@ -7,9 +7,19 @@ namespace Frostscript
     {
         public static T Run<T>(string frostscript)
         {
-            return Lexer.Lex(frostscript)
-                .Pipe(tokens => Parser.Parse(tokens, Expression.Expressions))
-                .Pipe(nodes => Interpreter.Interpret<T>(nodes, Expression.Expressions));
+            var validationResult = Lexer.Lex(frostscript)
+                .Pipe(Parser.Parse)
+                .Pipe(Validator.Validate);
+
+            return validationResult switch
+            {
+                IResult<IExpression[], string>.Pass pass => pass.Value
+                    .Pipe(Interpreter.Interpret<T>),
+                IResult<IExpression[], string>.Fail fail => throw new FrostscriptException(fail.Value),
+                _ => throw new Exception("Invalid result type")
+            };
         }
+
+        public static void Run(string frostscript) => Run<object>(frostscript);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Frostscript.Domain.Internal;
 using Xunit;
 
 namespace Frostscript.Tests
@@ -22,5 +20,37 @@ namespace Frostscript.Tests
         
         [Fact]
         public void Label() => Assert.Equal([new Token(TokenType.Label, 0, 0, "Hello")], Lexer.Lex(@"Hello"));
+
+        [Theory]
+        [InlineData("+", TokenType.Plus)]
+        [InlineData("-", TokenType.Minus)]
+        [InlineData("/", TokenType.ForwardSlash)]
+        [InlineData("*", TokenType.Star)]
+        [InlineData("!", TokenType.Not)]
+        [InlineData("!=", TokenType.NotEqual)]
+        [InlineData("==", TokenType.DoubleEqual)]
+        [InlineData(">", TokenType.GreaterThan)]
+        [InlineData(">=", TokenType.GreaterOrEqual)]
+        [InlineData("<", TokenType.LessThan)]
+        [InlineData("<=", TokenType.LessOrEqual)]
+        [InlineData(";", TokenType.SemiColon)]
+        [InlineData(":", TokenType.Colon)]
+        [InlineData("(", TokenType.ParenthesesOpen)]
+        [InlineData(")", TokenType.ParenthesesClose)]
+        [InlineData("->", TokenType.Arrow)]
+        [InlineData("var", TokenType.Var)]
+        [InlineData("let", TokenType.Let)]
+        [InlineData("and", TokenType.And)]
+        [InlineData("or", TokenType.Or)]
+        [InlineData("num", TokenType.Num)]
+        [InlineData("bool", TokenType.Bool)]
+        [InlineData("str", TokenType.Str)]
+        public void OperatorsAndKeywords(string script, TokenType tokenType) => Assert.Equal([new Token(tokenType, 0, 0)], Lexer.Lex(script));
+
+        [Fact]
+        public void True() => Assert.Equal([new Token(TokenType.Literal, 0, 0, true)], Lexer.Lex("true"));
+
+        [Fact]
+        public void False() => Assert.Equal([new Token(TokenType.Literal, 0, 0, false)], Lexer.Lex("false"));
     }
 }
