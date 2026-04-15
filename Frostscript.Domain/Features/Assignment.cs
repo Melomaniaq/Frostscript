@@ -34,11 +34,11 @@ namespace Frostscript.Domain.Features
         {
             if (node is AssignmentNode assignment)
             {
-                if (!variables[assignment.Label].Mutable)
-                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to"));
-
                 if (!variables.TryGetValue(assignment.Label, out var variableData))
                     return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} does not exist within scope"));
+
+                if (!variableData.Mutable)
+                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to"));
 
                 return Next.Validate(assignment.Value, variables)
                     .Bind(value =>

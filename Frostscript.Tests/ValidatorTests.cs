@@ -71,7 +71,55 @@ namespace Frostscript.Tests
             Assert.Equal(expected, expression.Validate(node, new Dictionary<string, VariableData>()));
         }
 
+        [Fact]
+        public void BinaryStringConcatenation()
+        {
+            var node = new BinaryNode(
+                BinaryType.Addition,
+                new LiteralNode("hello ", new Token()),
+                new LiteralNode("world", new Token()),
+                new Token()
+            );
+            var expression = new Binary(BinaryType.Addition, new Literal());
+
+            var expected = new IValidationResult.Pass(
+                new TypedBinaryNode(
+                    BinaryType.Addition,
+                    new TypedLiteralNode("hello ", new StringType()),
+                    new TypedLiteralNode("world", new StringType()),
+                    new StringType()
+                    )
+                );
+
+            Assert.Equal(expected, expression.Validate(node, new Dictionary<string, VariableData>()));
+        }
+
         [Theory]
+        [InlineData([BinaryType.Addition, 1, ""])]
+        [InlineData([BinaryType.Subtraction, 1, ""])]
+        [InlineData([BinaryType.Multiplication, 2, ""])]
+        [InlineData([BinaryType.Division, 6, ""])]
+        [InlineData([BinaryType.And, true, ""])]
+        [InlineData([BinaryType.Or, true, ""])]
+        [InlineData([BinaryType.GreaterThan, 1, ""])]
+        [InlineData([BinaryType.GreaterOrEqual, 1, ""])]
+        [InlineData([BinaryType.LessThan, 1, ""])]
+        [InlineData([BinaryType.LessOrEqual, 1, ""])]
+        public void BinaryFailWhenInvalidTypes(BinaryType binaryType, dynamic left, dynamic right)
+        {
+            var token = new Token();
+            var node = new BinaryNode(
+               binaryType,
+               new LiteralNode(left, new Token()),
+               new LiteralNode(right, new Token()),
+               token
+           );
+            var expression = new Binary(binaryType, new Literal());
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, new Dictionary<string, VariableData>()));
+        }
+
+            [Theory]
         [InlineData([BinaryType.Equality, 1, 1])]
         [InlineData([BinaryType.Equality, 1, 2])]
 
@@ -167,6 +215,16 @@ namespace Frostscript.Tests
         }
 
         [Fact]
+        public void LabelFailWhenDoesntExist()
+        {
+            var node = new LabelNode("hello", new());
+            var variables = new Dictionary<string, VariableData>();
+            var expression = new Label(new Literal());
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+        }
+
+        [Fact]
         public void Assignment()
         {
             var node = new AssignmentNode("hello", new LiteralNode(2, new ()), new());
@@ -182,6 +240,36 @@ namespace Frostscript.Tests
             );
 
             Assert.Equal(expected, expression.Validate(node, variables));
+        }
+
+        [Fact]
+        public void AssignmentFailWhenNotMutable()
+        {
+            var node = new AssignmentNode("hello", new LiteralNode(2, new()), new());
+            var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), false) } };
+            var expression = new Assignment(new Literal());
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+        }
+
+        [Fact]
+        public void AssignmentFailWhenLabelDoesntExist()
+        {
+            var node = new AssignmentNode("hello", new LiteralNode(2, new()), new());
+            var variables = new Dictionary<string, VariableData>();
+            var expression = new Assignment(new Literal());
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+        }
+
+        [Fact]
+        public void AssignmentFailWhenTypeMismatch()
+        {
+            var node = new AssignmentNode("hello", new LiteralNode(false, new()), new());
+            var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), true) } };
+            var expression = new Assignment(new Literal());
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -236,6 +324,38 @@ namespace Frostscript.Tests
             ));
 
             Assert.Equivalent(expected, expression.Validate(node, variables));
+        }
+
+        [Fact]
+        public void CallFailWhenLeftIsNotCallable()
+        {
+            var variables = new Dictionary<string, VariableData>();
+            var node = new CallNode(
+                new FunctionNode(
+                    [("parameter1", new NumberType())],
+                    new LiteralNode(1, new()),
+                    new()
+                ),
+                new LiteralNode("", new()),
+                new()
+            );
+            var expression = new Call(new Function(new Literal()));
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+        }
+
+        [Fact]
+        public void CallFailWhenTypeMismatch()
+        {
+            var variables = new Dictionary<string, VariableData>();
+            var node = new CallNode(
+                new LiteralNode(1, new()),
+                new LiteralNode(1, new()),
+                new()
+            );
+            var expression = new Call(new Function(new Literal()));
+
+            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]

@@ -77,7 +77,7 @@ namespace Frostscript.Domain.Features
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
                                     _ => new IValidationResult.Fail((
                                         binary.Token,
-                                        $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
+                                        $"Operator {binary.Type} cannot be used with types {left.DataType} and {right.DataType}"
                                     )),
                                 },
                                 BinaryType.LessThan or
