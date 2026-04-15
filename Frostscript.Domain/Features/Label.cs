@@ -15,7 +15,7 @@ namespace Frostscript.Domain.Features
         public IParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 
-                return new IParseResult.Pass((new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]));
+                return new IParseResult.Pass(new (new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]));
             else 
                 return Next.Parse(tokens);
         }

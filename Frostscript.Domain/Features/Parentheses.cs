@@ -22,7 +22,7 @@ namespace Frostscript.Domain.Features
             if (bodyTokens.Length != 0 && bodyTokens[0].Type is not TokenType.ParenthesesClose)
                 return new IParseResult.Fail(new ParseError(bodyTokens[0], "Expected ')'", bodyTokens));
 
-            return new IParseResult.Pass(new(new ParenthesesNode(body, tokens[0]), [.. bodyTokens.Skip(1)]));
+            return new IParseResult.Pass(new (new ParenthesesNode(body, tokens[0]), [.. bodyTokens.Skip(1)]));
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
