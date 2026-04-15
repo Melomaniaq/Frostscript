@@ -45,17 +45,22 @@ namespace Frostscript.Domain.Features
             }
             else return next.Interpret(expression, variables);
         }
-        public (INode, Token[]) Parse(Token[] tokens)
-        {
-            var (left, tokensAfterLeft) = next.Parse(tokens);
-            if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
 
-            if (operatorMap[type] == tokensAfterLeft[0].Type)
-            {
-                var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
-                return (new BinaryNode(type, left, right, tokensAfterLeft[0]), tokensAfterRight);
-            }
-            else return (left, tokensAfterLeft);
+        public IParseResult Parse(Token[] tokens)
+        {
+            return next.Parse(tokens)
+                .Bind(left =>
+                {
+                    if (left.RemainingTokens.Length != 0 && operatorMap[type] == left.RemainingTokens[0].Type)
+                    {
+                        return Parse([.. left.RemainingTokens.Skip(1)])
+                            .Map(right => new ParseSuccess(
+                                new BinaryNode(type, left.Node, right.Node, left.RemainingTokens[0]), 
+                                right.RemainingTokens)
+                            );
+                    }
+                    else return new IParseResult.Pass(left);
+                });
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)

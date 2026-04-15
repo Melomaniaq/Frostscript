@@ -12,7 +12,7 @@ namespace Frostscript.Domain.Features
             return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.ParenthesesOpen)
                 return Next.Parse(tokens);
@@ -20,9 +20,9 @@ namespace Frostscript.Domain.Features
             var (body, bodyTokens) = ExpressionTree.Parse([.. tokens.Skip(1)]);
 
             if (bodyTokens.Length != 0 && bodyTokens[0].Type is not TokenType.ParenthesesClose)
-                return (new ErrorNode("Expected ')'", bodyTokens[0]), [.. bodyTokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
+                return new IParseResult.Fail(new ParseError(bodyTokens[0], "Expected ')'", bodyTokens));
 
-            return (new ParenthesesNode(body, tokens[0]), [.. bodyTokens.Skip(1)]);
+            return new IParseResult.Pass(new(new ParenthesesNode(body, tokens[0]), [.. bodyTokens.Skip(1)]));
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)

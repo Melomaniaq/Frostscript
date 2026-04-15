@@ -4,7 +4,7 @@ namespace Frostscript.Domain.Features
 {
     public static class ParameterList
     {
-        public static Token[] TryParse(Token[] tokens, out (string label, IDataType type)[] parameters)
+        public static IResult<((string, IDataType)[], Token[]), ParseError> TryParse(Token[] tokens)
         {
             var _tokens = tokens;
 
@@ -20,9 +20,7 @@ namespace Frostscript.Domain.Features
                     yield return (label, annotation.data);
                 }
             }
-            parameters = [.. GenerateParameters()];
-            return _tokens;
-
+            return new IResult<((string, IDataType)[], Token[]), ParseError>.Pass(([.. GenerateParameters()], _tokens));
         }
         static (IDataType data, Token[] tokens) Annotation(Token[] tokens)
         {

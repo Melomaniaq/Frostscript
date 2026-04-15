@@ -16,15 +16,15 @@ namespace Frostscript.Domain.Features
             else return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens.Length > 1 && tokens[0].Type is TokenType.Label && tokens[1].Type is TokenType.SingleEqual)
             {
-                var (value, valueTokens) = Next.Parse([.. tokens.Skip(2)]);
-                return (
-                    new AssignmentNode(tokens[0].Literal, value, tokens[1]),
-                    valueTokens
-                );
+                return Next.Parse([.. tokens.Skip(2)])
+                    .Map(result => new ParseSuccess(
+                        new AssignmentNode(tokens[0].Literal, result.Node, tokens[1]),
+                        result.RemainingTokens
+                    ));
             }
 
             else return Next.Parse(tokens);

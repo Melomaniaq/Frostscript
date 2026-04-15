@@ -9,16 +9,19 @@ namespace Frostscript.Domain.Features
             if (expression is LiteralExpression literal) return literal.Value;
             else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
-            if (tokens[0].Type == TokenType.Literal) return new(
+            if (tokens[0].Type == TokenType.Literal) return new IParseResult.Pass(new (
                 new LiteralNode(tokens[0].Literal, tokens[0]),
                 [.. tokens.Skip(1)]
-            );
+            ));
 
-            else return new(
-                new ErrorNode($"Unexpected token {tokens[0].Literal}", tokens[0]),
-                [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]
+            else return new IParseResult.Fail(
+                new ParseError(
+                    tokens[0],
+                    $"Unexpected token {tokens[0].Literal}",
+                    tokens
+                )
             );
         }
 

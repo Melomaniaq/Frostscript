@@ -12,10 +12,10 @@ namespace Frostscript.Domain.Features
                 return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 
-                return (new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]);
+                return new IParseResult.Pass((new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]));
             else 
                 return Next.Parse(tokens);
         }
