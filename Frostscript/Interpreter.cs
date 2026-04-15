@@ -16,7 +16,5 @@ namespace Frostscript
         }
 
         internal static T Interpret<T>(IExpression[] ast) => (T)Interpret(ast);
-
-       
     }
 }
