@@ -1,6 +1,6 @@
-﻿namespace Frostscript
+﻿namespace Frostscript.Domain.Internal
 {
-    internal enum TokenType { 
+    public enum TokenType { 
         Literal,
         Label,
         Id,
@@ -23,9 +23,13 @@
         Fun,
         Arrow,
         SemiColon,
+        Colon,
         ParenthesesOpen,
-        ParenthesesClose
+        ParenthesesClose,
+        Num,
+        Bool,
+        Str
     }
 
-    internal record struct Token(TokenType Type, int Line, int Character, dynamic? Literal = null);
+    public record struct Token(TokenType Type, int Line, int Character, dynamic? Literal = null);
 }

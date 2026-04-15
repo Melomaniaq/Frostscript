@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Frostscript.Types
+namespace Frostscript.Domain.Types
 {
     public struct FSVoid();
 }

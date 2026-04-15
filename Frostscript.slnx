@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Frostscript.Domain/Frostscript.Domain.csproj" />
   <Project Path="Frostscript.Tests/Frostscript.Tests.csproj" />
-  <Project Path="Frostscript/Frostscript.csproj" />
+  <Project Path="Frostscript/Frostscript.csproj" Id="7f80e8d5-bf0b-49b6-938d-462f522011f9" />
 </Solution>

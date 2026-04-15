@@ -1,4 +1,5 @@
-﻿using Frostware.Pipe;
+﻿using Frostscript.Domain.Internal;
+using Frostware.Pipe;
 
 namespace Frostscript
 {
@@ -23,6 +24,7 @@ namespace Frostscript
                         '(' => Add(TokenType.ParenthesesOpen),
                         ')' => Add(TokenType.ParenthesesClose),
                         ';' => Add(TokenType.SemiColon),
+                        ':' => Add(TokenType.Colon),
                         '+' => Add(TokenType.Plus),
                         '-' => script[1] switch
                         {
@@ -70,6 +72,9 @@ namespace Frostscript
                                 "fun" => Add(TokenType.Fun, label.Length),
                                 "true" => Add(TokenType.Literal, label.Length, true),
                                 "false" => Add(TokenType.Literal, label.Length, false),
+                                "num" => Add(TokenType.Num, label.Length),
+                                "bool" => Add(TokenType.Bool, label.Length),
+                                "str" => Add(TokenType.Str, label.Length),
                                 _ => Add(TokenType.Label, label.Length, label),
                             }),
 

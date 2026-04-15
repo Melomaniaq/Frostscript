@@ -18,7 +18,7 @@ namespace Frostscript.Tests
         [InlineData("2 + 2 >= 1 * 4", true)]
         [InlineData("2 + 2 > 1 * 4", false)]
         [InlineData("2 + 2 <= 1 * 4", true)]
-        [InlineData("(fun x -> x) 2", 2)]
+        [InlineData("(fun x(num) -> x) 2", 2)]
         [InlineData("true or true and false", true)]
         public void Precedence(string script, dynamic expected)
         {
@@ -40,17 +40,28 @@ namespace Frostscript.Tests
         [Fact]
         public void Functions()
         {
-            Assert.Equal(2, Frostscript.Run<int>(@"let test = fun x -> x; test 2"));
+            Assert.Equal(2, Frostscript.Run<int>(@"let test = fun x(num) -> x; test 2"));
         }
 
         [Fact]
-        public void Closure()
+        public void ClosureNoMutation()
         {
-            Assert.Equal(5, Frostscript.Run<int>(@"let x = 2; let add = fun y -> x + y; add 3 "));
+            Assert.Equal(5, Frostscript.Run<int>(
+            @"
+                let x = 2; 
+                let add = fun y(num) -> 
+                    x + y; 
+                add 3
+            "));
+        }
+
+        [Fact]
+        public void ClosureMutation()
+        {
             Assert.Equal(5, Frostscript.Run<int>(
             @"
                 var x = 2; 
-                let incrementX = fun y -> 
+                let incrementX = fun y(num) -> 
                     x = x + y; 
                 incrementX 3; 
                 x
