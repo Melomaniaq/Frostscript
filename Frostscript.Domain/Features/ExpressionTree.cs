@@ -21,8 +21,8 @@ namespace Frostscript.Domain.Features
             new Binary(BinaryType.Subtraction,
             new Binary(BinaryType.Division,
             new Binary(BinaryType.Multiplication,
-            new Label(
             new Parentheses(
+            new Label(
             new Literal()))))))))))))))))));
 
         public static IValidationResult Validate(INode node, IDictionary<string, VariableData> variables) => expressionTree.Validate(node, variables);
