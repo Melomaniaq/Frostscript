@@ -1,4 +1,4 @@
-﻿namespace Frostscript.Domain.Internal
+﻿namespace Frostscript.Domain
 {
     public enum TokenType { 
         Literal,

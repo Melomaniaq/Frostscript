@@ -1,6 +1,4 @@
-﻿
-
-namespace Frostscript.Domain.Internal
+﻿namespace Frostscript.Domain
 {
     public static class IEnumerableExtentions
     {

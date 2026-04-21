@@ -1,5 +1,6 @@
-﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain;
+using Frostscript.Domain.Features;
+using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Types;
 using Xunit;
 

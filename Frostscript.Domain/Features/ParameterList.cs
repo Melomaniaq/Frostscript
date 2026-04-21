@@ -1,11 +1,13 @@
-﻿using Frostscript.Domain.Internal;
-using IAnnotationResult = Frostscript.Domain.Internal.IResult<
-    (Frostscript.Domain.Internal.IDataType dataType, Frostscript.Domain.Internal.Token[] remainingTokens), 
-    Frostscript.Domain.Internal.ParseError
+﻿using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Parameters;
+using Frostscript.Domain.Parser;
+using IAnnotationResult = Frostscript.Domain.IResult<
+    (Frostscript.Domain.Features.Models.IDataType dataType, Frostscript.Domain.Token[] remainingTokens),
+    Frostscript.Domain.Parser.ParseError
 >;
-using IParameterListResult = Frostscript.Domain.Internal.IResult<
-    Frostscript.Domain.Internal.ParameterListSuccess,
-    Frostscript.Domain.Internal.ParseError[]
+using IParameterListResult = Frostscript.Domain.IResult<
+    Frostscript.Domain.Parameters.ParameterListSuccess,
+    Frostscript.Domain.Parser.ParseError[]
 >;
 
 namespace Frostscript.Domain.Features

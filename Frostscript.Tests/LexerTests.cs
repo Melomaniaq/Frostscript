@@ -1,4 +1,4 @@
-﻿using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain;
 using Xunit;
 
 namespace Frostscript.Tests

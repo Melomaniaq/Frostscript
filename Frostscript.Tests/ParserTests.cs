@@ -1,10 +1,12 @@
-﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain;
+using Frostscript.Domain.Features;
+using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Parser;
 using Xunit;
 using IParseResult =
-    Frostscript.Domain.Internal.IResult<
-        Frostscript.Domain.Internal.ParseSuccess,
-        Frostscript.Domain.Internal.ParseError[]
+    Frostscript.Domain.IResult<
+        Frostscript.Domain.Parser.ParseSuccess,
+        Frostscript.Domain.Parser.ParseError[]
     >;
 
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Frostscript.Domain.Internal
+namespace Frostscript.Domain
 {
     public class Closure<TKey, TValue>(IDictionary<TKey, TValue> globalVariables) : IDictionary<TKey, TValue> where TKey : notnull
     {

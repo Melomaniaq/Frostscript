@@ -1,4 +1,4 @@
-﻿namespace Frostscript.Domain.Internal
+﻿namespace Frostscript.Domain.Parser
 {
     public class ParseError(Token token, string message, Token[] currentToken)
     {

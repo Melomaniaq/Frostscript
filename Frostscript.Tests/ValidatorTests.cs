@@ -1,11 +1,13 @@
 ﻿
+using Frostscript.Domain;
 using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Validator;
 using Xunit;
 using IValidationResult =
-    Frostscript.Domain.Internal.IResult<
-        Frostscript.Domain.Internal.ITypedNode,
-        Frostscript.Domain.Internal.ValidationError
+    Frostscript.Domain.IResult<
+        Frostscript.Domain.Features.Models.ITypedNode,
+        Frostscript.Domain.Validator.ValidationError
     >;
 
 namespace Frostscript.Tests

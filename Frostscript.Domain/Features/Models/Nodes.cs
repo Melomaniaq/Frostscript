@@ -1,5 +1,5 @@
-﻿
-namespace Frostscript.Domain.Internal
+﻿using Frostscript.Domain.Parameters;
+namespace Frostscript.Domain.Features.Models
 {
     public interface INode 
     { 

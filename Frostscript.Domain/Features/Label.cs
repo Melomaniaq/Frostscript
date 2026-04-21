@@ -1,4 +1,5 @@
-﻿using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Validator;
 
 namespace Frostscript.Domain.Features
 {

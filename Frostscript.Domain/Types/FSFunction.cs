@@ -1,6 +1,5 @@
-﻿
-using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Features;
+using Frostscript.Domain.Features.Models;
 
 namespace Frostscript.Domain.Types
 {
