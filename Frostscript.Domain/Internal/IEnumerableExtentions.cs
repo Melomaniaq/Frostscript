@@ -1,4 +1,5 @@
 ﻿
+
 namespace Frostscript.Domain.Internal
 {
     public static class IEnumerableExtentions
@@ -18,8 +19,9 @@ namespace Frostscript.Domain.Internal
 
                 (IResult<TPass[], TFail[]>.Fail fail, IResult<TPass, TFail>.Fail newFail) =>
                     new IResult<TPass[], TFail[]>.Fail([.. fail.Value, newFail.Value]),
-
             });
         }
+
+        public static IResult<TPass[], TFail[]> Traverse<TPass, TFail>(this IEnumerable<IResult<TPass, TFail>> enumerable) => Traverse(enumerable, x => x);
     }
 }

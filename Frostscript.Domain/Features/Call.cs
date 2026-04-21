@@ -18,25 +18,26 @@ namespace Frostscript.Domain.Features
             return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
-            var (left, leftTokens) = Next.Parse(tokens);
-
-            (INode, Token[]) GenerateCall(INode node, Token[] tokens)
+            return Next.Parse(tokens).Bind(left =>
             {
-                if (tokens.Length == 0)
-                    return (node, tokens);
-
-                if (tokens[0].Type is not (TokenType.ParenthesesClose or TokenType.SemiColon))
+                IParseResult GenerateCall(INode node, Token[] tokens)
                 {
-                    var (argument, argumentTokens) = Next.Parse(tokens);
-                    return GenerateCall(new CallNode(node, argument, left.Token), argumentTokens);
+                    if (tokens.Length == 0)
+                        return new IParseResult.Pass(new (node, tokens));
+
+                    if (tokens[0].Type is not (TokenType.ParenthesesClose or TokenType.SemiColon))
+                    {
+                        return Next.Parse(tokens)
+                            .Bind(argument => GenerateCall(new CallNode(node, argument.Node, left.Node.Token), argument.RemainingTokens));
+                    }
+
+                    return new IParseResult.Pass(new (node, tokens[0].Type is TokenType.SemiColon ? [.. tokens.Skip(1)] : tokens));
                 }
 
-                return (node, tokens[0].Type is TokenType.SemiColon ? [.. tokens.Skip(1)] : tokens);
-            }
-
-            return GenerateCall(left, leftTokens);
+                return GenerateCall(left.Node, left.RemainingTokens);
+                });
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
@@ -52,14 +53,14 @@ namespace Frostscript.Domain.Features
                                 FunctionType functionType => (functionType.Parameter.Equals(right.DataType)) switch
                                 {
                                     true => new IValidationResult.Pass(new TypedCallNode(left, right, functionType.Body)) as IValidationResult,
-                                    false => new IValidationResult.Fail((
+                                    false => new IValidationResult.Fail(new (
                                         call.Token,
                                         $"Function expected a argument of type {functionType.Parameter} but was given {right.DataType} instead"
                                     ))
                                 },
-                                _ => new IValidationResult.Fail((
+                                _ => new IValidationResult.Fail(new (
                                     call.Token,
-                                    $"{left.DataType} is not callable"
+                                    $"{left.DataType} is not callable, are you missing a ';'?"
                                 ))
                             };
                         })

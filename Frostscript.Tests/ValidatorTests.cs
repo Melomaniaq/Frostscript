@@ -5,7 +5,7 @@ using Xunit;
 using IValidationResult =
     Frostscript.Domain.Internal.IResult<
         Frostscript.Domain.Internal.ITypedNode,
-        (Frostscript.Domain.Internal.Token token, string error)
+        Frostscript.Domain.Internal.ValidationError
     >;
 
 namespace Frostscript.Tests
@@ -119,7 +119,7 @@ namespace Frostscript.Tests
             Assert.IsType<IValidationResult.Fail>(expression.Validate(node, new Dictionary<string, VariableData>()));
         }
 
-            [Theory]
+        [Theory]
         [InlineData([BinaryType.Equality, 1, 1])]
         [InlineData([BinaryType.Equality, 1, 2])]
 
@@ -276,7 +276,7 @@ namespace Frostscript.Tests
         public void Function()
         {
             var node = new FunctionNode(
-                [("parameter1", new NumberType()), ("parameter2", new NumberType())], 
+                [new ("parameter1", new NumberType()), new ("parameter2", new NumberType())], 
                 new LiteralNode(1, new()), 
                 new()
             );
@@ -286,7 +286,7 @@ namespace Frostscript.Tests
 
             var expected = new IValidationResult.Pass(
                 new TypedFunctionNode(
-                    [("parameter1", new NumberType()), ("parameter2", new NumberType())],
+                    [new ("parameter1", new NumberType()), new ("parameter2", new NumberType())],
                     new TypedLiteralNode(1, new NumberType()),
                     new FunctionType(
                         new NumberType(),
@@ -304,7 +304,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData>();
             var node = new CallNode(
                 new FunctionNode(
-                    [("parameter1", new NumberType())],
+                    [new ("parameter1", new NumberType())],
                     new LiteralNode(1, new()), 
                     new()
                 ),
@@ -315,7 +315,7 @@ namespace Frostscript.Tests
             var expected = new IValidationResult.Pass(
                 new TypedCallNode(
                     new TypedFunctionNode(
-                        [("parameter1", new NumberType())],
+                        [new ("parameter1", new NumberType())],
                         new TypedLiteralNode(1, new NumberType()),
                         new FunctionType(new NumberType(), new NumberType())
                     ),
@@ -332,7 +332,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData>();
             var node = new CallNode(
                 new FunctionNode(
-                    [("parameter1", new NumberType())],
+                    [new ("parameter1", new NumberType())],
                     new LiteralNode(1, new()),
                     new()
                 ),

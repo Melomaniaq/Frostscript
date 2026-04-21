@@ -16,15 +16,15 @@ namespace Frostscript.Domain.Features
             else return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens.Length > 1 && tokens[0].Type is TokenType.Label && tokens[1].Type is TokenType.SingleEqual)
             {
-                var (value, valueTokens) = Next.Parse([.. tokens.Skip(2)]);
-                return (
-                    new AssignmentNode(tokens[0].Literal, value, tokens[1]),
-                    valueTokens
-                );
+                return Next.Parse([.. tokens.Skip(2)])
+                    .Map(result => new ParseSuccess(
+                        new AssignmentNode(tokens[0].Literal, result.Node, tokens[1]),
+                        result.RemainingTokens
+                    ));
             }
 
             else return Next.Parse(tokens);
@@ -35,10 +35,10 @@ namespace Frostscript.Domain.Features
             if (node is AssignmentNode assignment)
             {
                 if (!variables.TryGetValue(assignment.Label, out var variableData))
-                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} does not exist within scope"));
+                    return new IValidationResult.Fail(new (assignment.Token, $"Variable {assignment.Label} does not exist within scope"));
 
                 if (!variableData.Mutable)
-                    return new IValidationResult.Fail((assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to"));
+                    return new IValidationResult.Fail(new (assignment.Token, $"Variable {assignment.Label} is immutable and cannot be assigned to"));
 
                 return Next.Validate(assignment.Value, variables)
                     .Bind(value =>
@@ -46,7 +46,7 @@ namespace Frostscript.Domain.Features
                         if (value.DataType.Equals(variableData.DataType)) 
                             return new IValidationResult.Pass(new TypedAssignmentNode(assignment.Label, value, new VoidType())) as IValidationResult;
                         else 
-                            return new IValidationResult.Fail((
+                            return new IValidationResult.Fail(new (
                             assignment.Token,
                             $"Variable {assignment.Label} is of type {variableData.DataType} and cannot be assigned a value of type {value.DataType}"
                         ));

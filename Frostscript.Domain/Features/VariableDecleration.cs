@@ -14,21 +14,21 @@ namespace Frostscript.Domain.Features
             }
             else return Next.Interpret(expression, variables);
         }
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
             {
                 if (tokens[1].Type is not TokenType.Label)
-                    return (
-                        new ErrorNode($"Expected Label", tokens[1]),
-                        [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]
-                    );
+                    return new IParseResult.Fail([new ParseError(tokens[1], "Expected Label", tokens)]);
               
                 if (tokens[2].Type is not TokenType.SingleEqual)
-                    return (new ErrorNode($"Expected '='", tokens[2]), [.. tokens.SkipWhile(x => x.Type is not TokenType.SemiColon)]);
+                    return new IParseResult.Fail([new ParseError(tokens[2], "Expected '='", tokens)]);
 
-                var (value, valueTokens) = Next.Parse([.. tokens.Skip(3)]);
-                return (new VariableNode(tokens[1].Literal, value, tokens[0].Type is TokenType.Var, tokens[0]), valueTokens);
+                return Next.Parse([.. tokens.Skip(3)])
+                    .Map(value => new ParseSuccess(
+                        new VariableNode(tokens[1].Literal, value.Node, tokens[0].Type is TokenType.Var, tokens[0]), 
+                        value.RemainingTokens
+                    ));
             }
             else return Next.Parse(tokens);
         }

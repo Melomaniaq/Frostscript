@@ -45,17 +45,22 @@ namespace Frostscript.Domain.Features
             }
             else return next.Interpret(expression, variables);
         }
-        public (INode, Token[]) Parse(Token[] tokens)
-        {
-            var (left, tokensAfterLeft) = next.Parse(tokens);
-            if (tokensAfterLeft.Length == 0) return (left, tokensAfterLeft);
 
-            if (operatorMap[type] == tokensAfterLeft[0].Type)
-            {
-                var (right, tokensAfterRight) = Parse([.. tokensAfterLeft.Skip(1)]);
-                return (new BinaryNode(type, left, right, tokensAfterLeft[0]), tokensAfterRight);
-            }
-            else return (left, tokensAfterLeft);
+        public IParseResult Parse(Token[] tokens)
+        {
+            return next.Parse(tokens)
+                .Bind(left =>
+                {
+                    if (left.RemainingTokens.Length != 0 && operatorMap[type] == left.RemainingTokens[0].Type)
+                    {
+                        return Parse([.. left.RemainingTokens.Skip(1)])
+                            .Map(right => new ParseSuccess(
+                                new BinaryNode(type, left.Node, right.Node, left.RemainingTokens[0]), 
+                                right.RemainingTokens)
+                            );
+                    }
+                    else return new IParseResult.Pass(left);
+                });
         }
 
         public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
@@ -75,7 +80,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.Division => (left.DataType, right.DataType) switch
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be used with types {left.DataType} and {right.DataType}"
                                     )),
@@ -86,7 +91,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.GreaterThan => (left.DataType, right.DataType) switch
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
                                     )),
@@ -95,7 +100,7 @@ namespace Frostscript.Domain.Features
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())),
                                     (StringType, StringType) => new IValidationResult.Pass(BinaryOFType(new StringType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                        $"type {left.DataType} cannot be additioned with type {right.DataType}"
                                     )),
@@ -104,7 +109,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
                                 {
                                     (BoolType, BoolType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Both sides of {binary.Type} must be a Bool. {left.DataType} and {right.DataType} where given"
                                     )),

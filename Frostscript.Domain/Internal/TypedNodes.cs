@@ -11,7 +11,7 @@ namespace Frostscript.Domain.Internal
     public record TypedLabelNode(string Label, IDataType DataType) : ITypedNode;
     public record TypedLiteralNode(dynamic Value, IDataType DataType) : ITypedNode;
     public record TypedAssignmentNode(string Label, ITypedNode Value, IDataType DataType) : ITypedNode;
-    public record TypedFunctionNode((string Label, IDataType DataType)[] Parameters, ITypedNode Body, IDataType DataType) : ITypedNode;
+    public record TypedFunctionNode(Parameter[] Parameters, ITypedNode Body, IDataType DataType) : ITypedNode;
     public record TypedCallNode(ITypedNode Left, ITypedNode Right, IDataType DataType) : ITypedNode;
     public record TypedParenthesesNode(ITypedNode Body, IDataType DataType) : ITypedNode;
 }
