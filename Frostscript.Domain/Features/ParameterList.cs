@@ -18,10 +18,16 @@ namespace Frostscript.Domain.Features
 
             IEnumerable<IResult<Parameter, ParseError>> GenerateParameters()
             {
-                while (_tokens[0].Type != TokenType.Arrow)
+                while (_tokens.Length != 0 && _tokens[0].Type is not TokenType.Arrow)
                 {
                     if (_tokens[0].Type is not TokenType.Label)
-                        throw new Exception("Expected parameter");
+                    {
+                        var error = new ParseError(_tokens[0], "Expected parameter", _tokens);
+                        _tokens = error.RemainingTokens;
+                        yield return new IResult<Parameter, ParseError>.Fail(error);
+                        continue;
+                    }
+
                     var label = _tokens[0].Literal;
                     var annotation = Annotation([.. _tokens.Skip(1)]);
 

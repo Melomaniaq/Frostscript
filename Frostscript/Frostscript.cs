@@ -7,7 +7,8 @@ namespace Frostscript
     {
         public static T Run<T>(string frostscript)
         {
-            var validationResult = Lexer.Lex(frostscript)
+            var validationResult = 
+                Lexer.Lex(frostscript)
                 .Pipe(Parser.Parse)
                 .MapFailure(errors => errors.Select(error => new ValidationError (error.Token, error.Message)).ToArray())
                 .Bind(Validator.Validate)
