@@ -80,7 +80,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.Division => (left.DataType, right.DataType) switch
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be used with types {left.DataType} and {right.DataType}"
                                     )),
@@ -91,7 +91,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.GreaterThan => (left.DataType, right.DataType) switch
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
                                     )),
@@ -100,7 +100,7 @@ namespace Frostscript.Domain.Features
                                 {
                                     (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())),
                                     (StringType, StringType) => new IValidationResult.Pass(BinaryOFType(new StringType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                        $"type {left.DataType} cannot be additioned with type {right.DataType}"
                                     )),
@@ -109,7 +109,7 @@ namespace Frostscript.Domain.Features
                                 BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
                                 {
                                     (BoolType, BoolType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail((
+                                    _ => new IValidationResult.Fail(new (
                                         binary.Token,
                                         $"Both sides of {binary.Type} must be a Bool. {left.DataType} and {right.DataType} where given"
                                     )),

@@ -9,7 +9,11 @@ namespace Frostscript
         {
             var validationResult = Lexer.Lex(frostscript)
                 .Pipe(Parser.Parse)
-                .Pipe(Validator.Validate);
+                .MapFailure(errors => errors.Select(error => new ValidationError (error.Token, error.Message)).ToArray())
+                .Bind(Validator.Validate)
+                .MapFailure(x =>
+                    x.Aggregate("", (errorMessage, newError) => errorMessage + $"[{newError.Token.Line}:{newError.Token.Character}] {newError.Error} \n")
+                );
 
             return validationResult switch
             {

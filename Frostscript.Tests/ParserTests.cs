@@ -1,6 +1,12 @@
 ﻿using Frostscript.Domain.Features;
 using Frostscript.Domain.Internal;
 using Xunit;
+using IParseResult =
+    Frostscript.Domain.Internal.IResult<
+        Frostscript.Domain.Internal.ParseSuccess,
+        Frostscript.Domain.Internal.ParseError[]
+    >;
+
 
 namespace Frostscript.Tests
 {
@@ -11,9 +17,9 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, "Hello")];
             var expression = new Literal();
-            var expected = new LiteralNode("Hello", tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new LiteralNode("Hello", tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Theory]
@@ -39,7 +45,7 @@ namespace Frostscript.Tests
                 new Token(@operator, 0, 4), 
                 new Token(TokenType.Literal, 0, 5, 5)];
             var expression = new Binary(type, new Literal());
-            var expected = new BinaryNode(
+            var expected = new IParseResult.Pass(new ParseSuccess(new BinaryNode(
                 type, 
                 new LiteralNode(1, tokens[0]), 
                 new BinaryNode(
@@ -48,9 +54,9 @@ namespace Frostscript.Tests
                     new LiteralNode(5, tokens[4]), 
                     tokens[3]),
                 tokens[1]
-            );
+            ), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -58,9 +64,9 @@ namespace Frostscript.Tests
         {
             Token[] tokens = [new Token(TokenType.Literal, 0, 0, 1)];
             var expression = new Binary(BinaryType.Addition, new Literal());
-            var expected = new LiteralNode(1, tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new LiteralNode(1, tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Theory]
@@ -77,9 +83,9 @@ namespace Frostscript.Tests
             ];
 
             var expression = new VariableDecleration(new Literal());
-            var expected = new VariableNode("myVariable", new LiteralNode(1, tokens[3]), mutable, tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new VariableNode("myVariable", new LiteralNode(1, tokens[3]), mutable, tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Theory]
@@ -95,7 +101,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new VariableDecleration(new Literal());
-            Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
+            Assert.IsType<IParseResult.Fail>(expression.Parse(tokens));
         }
 
         [Theory]
@@ -111,7 +117,7 @@ namespace Frostscript.Tests
             ];
 
             var expression = new VariableDecleration(new Literal());
-            Assert.IsType<ErrorNode>(expression.Parse(tokens).Item1);
+            Assert.IsType<IParseResult.Fail>(expression.Parse(tokens));
         }
 
         [Fact]
@@ -120,9 +126,9 @@ namespace Frostscript.Tests
 
             Token[] tokens = [new Token(TokenType.Label, 0, 0, "hello")];
             var expression = new Label(new Literal());
-            var expected = new LabelNode("hello", tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new LabelNode("hello", tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -136,9 +142,9 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Assignment(new Literal());
-            var expected = new AssignmentNode("hello", new LiteralNode(1, tokens[2]), tokens[1]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new AssignmentNode("hello", new LiteralNode(1, tokens[2]), tokens[1]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -164,20 +170,17 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Function(new Literal());
-            var expected = new FunctionNode(
+            var expected = new IParseResult.Pass(new ParseSuccess(new FunctionNode(
                 [
-                    ("parameter1", new NumberType()), 
-                    ("parameter2", new NumberType()), 
-                    ("parameter3", new NumberType())
+                    new ("parameter1", new NumberType()), 
+                    new ("parameter2", new NumberType()), 
+                    new ("parameter3", new NumberType())
                 ], 
                 new LiteralNode(1, tokens[14]), 
                 tokens[0]
-            );
+            ), []));
 
-            var (actual, remainingTokens) = expression.Parse(tokens);
-
-            Assert.Empty(remainingTokens);
-            Assert.Equivalent(expected, actual);
+            Assert.Equivalent(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -195,11 +198,12 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Function(new Literal());
-            var expected = new FunctionNode([("parameter", new NumberType())], new LiteralNode(1, tokens[6]), tokens[0]);
-            var (actual, remainingTokens) = expression.Parse(tokens);
+            var expected = new IParseResult.Pass(new ParseSuccess(
+                new FunctionNode([new ("parameter", new NumberType())], new LiteralNode(1, tokens[6]), tokens[0]), 
+                []
+            ));
 
-            Assert.Empty(remainingTokens);
-            Assert.Equivalent(expected, actual);
+            Assert.Equivalent(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -213,20 +217,16 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new CallNode(
+            var expected = new IParseResult.Pass(new ParseSuccess(new CallNode(
                 new CallNode(
                     new LabelNode("func", tokens[0]), 
                     new LiteralNode(1, tokens[1]),
                     tokens[0]),
                 new LiteralNode(2, tokens[2]),
                 tokens[0]
-            );
+            ), []));
 
-
-            var (actual, remainingTokens) = expression.Parse(tokens);
-
-            Assert.Empty(remainingTokens);
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -240,12 +240,11 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new CallNode(new LabelNode("func", tokens[0]), new LiteralNode(1, tokens[1]), tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(
+                new CallNode(new LabelNode("func", tokens[0]), new LiteralNode(1, tokens[1]), tokens[0]), 
+                [new Token(TokenType.ParenthesesClose, 0, 2)]));
 
-            var (actual, remainingTokens) = expression.Parse(tokens);
-
-            Assert.Equal([new Token(TokenType.ParenthesesClose, 0, 2)], remainingTokens);
-            Assert.Equal(expected, actual);
+            Assert.Equivalent(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -258,9 +257,9 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new LabelNode("func", tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new LabelNode("func", tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -272,9 +271,9 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Call(new Label(new Literal()));
-            var expected = new LabelNode("func", tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(new LabelNode("func", tokens[0]), []));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
 
         [Fact]
@@ -288,9 +287,12 @@ namespace Frostscript.Tests
             ];
 
             var expression = new Parentheses(new Literal());
-            var expected = new ParenthesesNode(new LiteralNode(1, tokens[1]), tokens[0]);
+            var expected = new IParseResult.Pass(new ParseSuccess(
+                new ParenthesesNode(new LiteralNode(1, tokens[1]), tokens[0]),
+                []
+            ));
 
-            Assert.Equal((expected, []), expression.Parse(tokens));
+            Assert.Equal(expected, expression.Parse(tokens));
         }
     }
 }

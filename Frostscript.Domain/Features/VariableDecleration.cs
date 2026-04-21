@@ -19,10 +19,10 @@ namespace Frostscript.Domain.Features
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
             {
                 if (tokens[1].Type is not TokenType.Label)
-                    return new IParseResult.Fail(new ParseError(tokens[1], "Expected Label", tokens));
+                    return new IParseResult.Fail([new ParseError(tokens[1], "Expected Label", tokens)]);
               
                 if (tokens[2].Type is not TokenType.SingleEqual)
-                    return new IParseResult.Fail(new ParseError(tokens[2], "Expected '='", tokens));
+                    return new IParseResult.Fail([new ParseError(tokens[2], "Expected '='", tokens)]);
 
                 return Next.Parse([.. tokens.Skip(3)])
                     .Map(value => new ParseSuccess(

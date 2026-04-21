@@ -16,12 +16,12 @@ namespace Frostscript.Domain.Features
                 [.. tokens.Skip(1)]
             ));
 
-            else return new IParseResult.Fail(
+            else return new IParseResult.Fail([
                 new ParseError(
                     tokens[0],
                     $"Unexpected token {tokens[0].Literal}",
                     tokens
-                )
+                )]
             );
         }
 
@@ -39,7 +39,7 @@ namespace Frostscript.Domain.Features
 
                 return new IValidationResult.Pass(new TypedLiteralNode(literal.Value, dataType));
             }
-            if (node is ErrorNode error) return new IValidationResult.Fail((error.Token, error.Error));
+            if (node is ErrorNode error) return new IValidationResult.Fail(new (error.Token, error.Error));
             else throw new NotImplementedException("Node could not be resolved. Did you forget to add the expression to the expression tree?");
         }
     }

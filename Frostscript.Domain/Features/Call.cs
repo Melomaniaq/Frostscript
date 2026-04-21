@@ -53,14 +53,14 @@ namespace Frostscript.Domain.Features
                                 FunctionType functionType => (functionType.Parameter.Equals(right.DataType)) switch
                                 {
                                     true => new IValidationResult.Pass(new TypedCallNode(left, right, functionType.Body)) as IValidationResult,
-                                    false => new IValidationResult.Fail((
+                                    false => new IValidationResult.Fail(new (
                                         call.Token,
                                         $"Function expected a argument of type {functionType.Parameter} but was given {right.DataType} instead"
                                     ))
                                 },
-                                _ => new IValidationResult.Fail((
+                                _ => new IValidationResult.Fail(new (
                                     call.Token,
-                                    $"{left.DataType} is not callable"
+                                    $"{left.DataType} is not callable, are you missing a ';'?"
                                 ))
                             };
                         })
