@@ -1,64 +1,92 @@
-﻿using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Parameters;
+using Frostscript.Domain.Parser;
+using IAnnotationResult = Frostscript.Domain.IResult<
+    (Frostscript.Domain.Features.Models.IDataType dataType, Frostscript.Domain.Token[] remainingTokens),
+    Frostscript.Domain.Parser.ParseError
+>;
+using IParameterListResult = Frostscript.Domain.IResult<
+    Frostscript.Domain.Parameters.ParameterListSuccess,
+    Frostscript.Domain.Parser.ParseError[]
+>;
 
 namespace Frostscript.Domain.Features
 {
     public static class ParameterList
     {
-        public static Token[] TryParse(Token[] tokens, out (string label, IDataType type)[] parameters)
+        public static IParameterListResult Parse(Token[] tokens)
         {
             var _tokens = tokens;
 
-            IEnumerable<(string label, IDataType dataType)> GenerateParameters()
+            IEnumerable<IResult<Parameter, ParseError>> GenerateParameters()
             {
-                while (_tokens[0].Type != TokenType.Arrow)
+                while (_tokens.Length != 0 && _tokens[0].Type is not TokenType.Arrow)
                 {
                     if (_tokens[0].Type is not TokenType.Label)
-                        throw new Exception("Expected parameter");
+                    {
+                        var error = new ParseError(_tokens[0], "Expected parameter", _tokens);
+                        _tokens = error.RemainingTokens;
+                        yield return new IResult<Parameter, ParseError>.Fail(error);
+                        continue;
+                    }
+
                     var label = _tokens[0].Literal;
                     var annotation = Annotation([.. _tokens.Skip(1)]);
-                    _tokens = annotation.tokens;
-                    yield return (label, annotation.data);
+
+                    if (annotation is IAnnotationResult.Fail fail)
+                        _tokens = fail.Value.RemainingTokens;
+                    else if (annotation is IAnnotationResult.Pass pass)
+                        _tokens = pass.Value.remainingTokens;
+
+                    yield return annotation.Map(annotation => new Parameter(label, annotation.dataType));
                 }
             }
-            parameters = [.. GenerateParameters()];
-            return _tokens;
-
+            return GenerateParameters()
+                .Traverse()
+                .Map(parameterList => new ParameterListSuccess(parameterList, _tokens));
         }
-        static (IDataType data, Token[] tokens) Annotation(Token[] tokens)
+        static IAnnotationResult Annotation(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.ParenthesesOpen)
             {
-                var annotation = FunctionType([.. tokens.Skip(1)]);
+                return FunctionType([.. tokens.Skip(1)]).Bind(annotation =>
+                {
+                    if (annotation.remainingTokens[0].Type is not TokenType.ParenthesesClose)
+                        return new IAnnotationResult.Fail(new ParseError(annotation.remainingTokens[0], "Expected ')'", annotation.remainingTokens)) as IAnnotationResult;
+                    else 
+                        return new IAnnotationResult.Pass((annotation.dataType, [.. annotation.remainingTokens.Skip(1)]));
 
-                if (annotation.tokens[0].Type is not TokenType.ParenthesesClose)
-                    throw new Exception("Expected ')'");
-
-                return (annotation.dataType, [.. annotation.tokens.Skip(1)]);
+                });
             }
-            else return (new UnknownType(), tokens);
+            else return new IAnnotationResult.Pass((new UnknownType(), tokens));
         }
 
-        static (IDataType dataType, Token[] tokens) FunctionType(Token[] tokens)
+        static IAnnotationResult FunctionType(Token[] tokens)
         {
-            var parameter = Type(tokens);
-            if (parameter.tokens[0].Type is TokenType.Arrow)
+            return Type(tokens).Bind(parameter =>
             {
-                var body = FunctionType([.. parameter.tokens.Skip(1)]);
-                if (body.dataType is FunctionType func)
-                    return (new FunctionType(parameter.dataType, func), body.tokens);
-                else return (new FunctionType(parameter.dataType, body.dataType), body.tokens);
-            }
-            else return parameter;
+                if (parameter.remainingTokens[0].Type is TokenType.Arrow)
+                {
+                    return FunctionType([.. parameter.remainingTokens.Skip(1)]).Map(body =>
+                    {
+                        if (body.dataType is FunctionType func)
+                            return (new FunctionType(parameter.dataType, func) as IDataType, body.remainingTokens);
+                        else 
+                            return (new FunctionType(parameter.dataType, body.dataType), body.remainingTokens);
+                    });
+                }
+                else return new IAnnotationResult.Pass(parameter);
+            });
         }
 
-        static (IDataType dataType, Token[] tokens) Type(Token[] tokens)
+        static IAnnotationResult Type(Token[] tokens)
         {
             return tokens[0].Type switch
             {
-                TokenType.Num => (new NumberType(), [.. tokens.Skip(1)]),
-                TokenType.Str => (new StringType(), [.. tokens.Skip(1)]),
-                TokenType.Bool => (new BoolType(), [.. tokens.Skip(1)]),
-                _ => throw new Exception("Expected type after '('")
+                TokenType.Num => new IAnnotationResult.Pass((new NumberType(), [.. tokens.Skip(1)])),
+                TokenType.Str => new IAnnotationResult.Pass((new StringType(), [.. tokens.Skip(1)])),
+                TokenType.Bool => new IAnnotationResult.Pass((new BoolType(), [.. tokens.Skip(1)])),
+                _ => new IAnnotationResult.Fail(new ParseError(tokens[0], "Expected type after '('", tokens))
             };
         }
     }

@@ -1,5 +1,4 @@
-﻿
-namespace Frostscript.Domain.Internal
+﻿namespace Frostscript.Domain
 {
     public interface IResult<TPass, TFail>
     {

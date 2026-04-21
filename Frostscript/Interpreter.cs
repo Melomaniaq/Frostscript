@@ -1,5 +1,5 @@
 ﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+using Frostscript.Domain.Features.Models;
 
 namespace Frostscript
 {
@@ -16,7 +16,5 @@ namespace Frostscript
         }
 
         internal static T Interpret<T>(IExpression[] ast) => (T)Interpret(ast);
-
-       
     }
 }

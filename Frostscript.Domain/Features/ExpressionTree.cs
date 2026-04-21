@@ -1,4 +1,5 @@
-﻿using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Validator;
 
 namespace Frostscript.Domain.Features
 {
@@ -21,12 +22,12 @@ namespace Frostscript.Domain.Features
             new Binary(BinaryType.Subtraction,
             new Binary(BinaryType.Division,
             new Binary(BinaryType.Multiplication,
-            new Label(
             new Parentheses(
+            new Label(
             new Literal()))))))))))))))))));
 
         public static IValidationResult Validate(INode node, IDictionary<string, VariableData> variables) => expressionTree.Validate(node, variables);
-        public static (INode, Token[]) Parse(Token[] tokens) => expressionTree.Parse(tokens);
+        public static IParseResult Parse(Token[] tokens) => expressionTree.Parse(tokens);
         public static dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables) => expressionTree.Interpret(expression, variables);
     }
 }

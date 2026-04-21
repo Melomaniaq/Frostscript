@@ -1,20 +1,19 @@
-﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain;
+using Frostscript.Domain.Features;
+using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Parser;
 
 namespace Frostscript
 {
     internal static class Parser
     {
-        public static INode[] Parse(Token[] tokens)
+        public static IResult<INode[], ParseError[]> Parse(Token[] tokens)
         {
-            INode[] GenerateNodes(INode[] nodes, Token[] tokens)
+            IResult<INode[], ParseError[]> GenerateNodes(INode[] nodes, Token[] tokens)
             {
                 if (tokens.Length > 0)
-                {
-                    var (node, newTokens) = ExpressionTree.Parse(tokens);
-                    return GenerateNodes([.. nodes.Append(node)], newTokens);
-                }
-                else return nodes;
+                    return ExpressionTree.Parse(tokens).Bind(node => GenerateNodes([.. nodes.Append(node.Node)], node.RemainingTokens));
+                else return new IResult<INode[], ParseError[]>.Pass(nodes);
             }
 
             return GenerateNodes([], tokens);

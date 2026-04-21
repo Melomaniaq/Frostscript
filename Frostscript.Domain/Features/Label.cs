@@ -1,4 +1,5 @@
-﻿using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Validator;
 
 namespace Frostscript.Domain.Features
 {
@@ -12,10 +13,10 @@ namespace Frostscript.Domain.Features
                 return Next.Interpret(expression, variables);
         }
 
-        public (INode, Token[]) Parse(Token[] tokens)
+        public IParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 
-                return (new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]);
+                return new IParseResult.Pass(new (new LabelNode(tokens[0].Literal, tokens[0]), [.. tokens.Skip(1)]));
             else 
                 return Next.Parse(tokens);
         }
@@ -27,7 +28,7 @@ namespace Frostscript.Domain.Features
                 if (variables.TryGetValue(label.Label, out var variable))
                     return new IValidationResult.Pass(new TypedLabelNode(label.Label, variable.DataType));
                 else 
-                    return new IValidationResult.Fail((label.Token, $"Label '{label.Label}' does not exist within scope"));
+                    return new IValidationResult.Fail(new (label.Token, $"Label '{label.Label}' does not exist within scope"));
             }
             else return Next.Validate(node, variables);
         }

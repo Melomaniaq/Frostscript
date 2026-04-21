@@ -1,20 +1,20 @@
-﻿using Frostscript.Domain.Features;
-using Frostscript.Domain.Internal;
+﻿using Frostscript.Domain;
+using Frostscript.Domain.Features;
+using Frostscript.Domain.Features.Models;
+using Frostscript.Domain.Validator;
 
 namespace Frostscript
 {
     internal static class Validator
     {
-        internal static IResult<IExpression[], string> Validate(INode[] ast)
+        internal static IResult<IExpression[], ValidationError[]> Validate(INode[] ast)
         {
             Dictionary<string, VariableData> globalVariables = [];
 
             return ast
                 .Traverse(node => ExpressionTree.Validate(node, globalVariables))
-                .Map(x => x.Select(Convert).ToArray())
-                .MapFailure(x => 
-                    x.Aggregate("", (errorMessage, newError) => errorMessage + $"[{newError.token.Line}:{newError.token.Character}] {newError.error} \n")
-                );
+                .Map(x => x.Select(Convert).ToArray());
+                
         }
 
         static IExpression Convert(ITypedNode node)

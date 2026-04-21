@@ -1,5 +1,4 @@
-﻿
-namespace Frostscript.Domain.Internal
+﻿namespace Frostscript.Domain.Features.Models
 {
     public interface IDataType;
     public struct NumberType : IDataType;
