@@ -4,7 +4,7 @@ A custom, interpreted language for study and fun
 # Table of Contents
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-- [Wiki](https://github.com/Melomaniaq/Frostscript/wiki)
+- [Documentation](https://github.com/Melomaniaq/Frostscript/wiki)
 
 # Introduction
 This project aims to make a multi-paradigm, interpreted scripting language for the .NET ecosystem inspired by C# and F#.
