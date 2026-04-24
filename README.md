@@ -12,5 +12,5 @@ This project aims to make a multi-paradigm, interpreted scripting language for t
 It's primary purpose is for learning the lower-level code, techniques, and processes of creating a language.
 
 # Getting Started
-Clone the repo
-Open solution in Visual Studio
+1. Clone the repo
+2. Open solution in Visual Studio
