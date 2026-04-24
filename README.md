@@ -17,7 +17,7 @@ It's primary purpose is for learning the lower-level code, techniques, and proce
 2. Open solution in Visual Studio
 
 # Architecture
-Froscript is composed of 4 main components
+Frostscript is composed of 4 main components
 ### [Lexer](/Frostscript/Lexer.cs)
 Tokonises the script, converting characters to [tokens](/Frostscript.Domain/Token.cs)
 ### [Parser](/Frostscript/Parser.cs)
