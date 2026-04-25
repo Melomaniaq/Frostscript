@@ -2,6 +2,7 @@
 using Frostscript.Domain.Features;
 using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Validator;
+using MalFunction.Result;
 
 namespace Frostscript
 {

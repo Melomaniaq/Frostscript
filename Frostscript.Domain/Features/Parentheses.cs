@@ -1,6 +1,7 @@
 ﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Parser;
 using Frostscript.Domain.Validator;
+using MalFunction.Result;
 
 namespace Frostscript.Domain.Features
 {
@@ -14,7 +15,7 @@ namespace Frostscript.Domain.Features
             return Next.Interpret(expression, variables);
         }
 
-        public IParseResult Parse(Token[] tokens)
+        public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.ParenthesesOpen)
                 return Next.Parse(tokens);
@@ -22,18 +23,18 @@ namespace Frostscript.Domain.Features
             return ExpressionTree.Parse([.. tokens.Skip(1)]).Bind(body =>
             {
                 if (body.RemainingTokens.Length != 0 && body.RemainingTokens[0].Type is not TokenType.ParenthesesClose)
-                    return new IParseResult.Fail([new ParseError(body.RemainingTokens[0], "Expected ')'", body.RemainingTokens)]) as IParseResult;
+                    return new ParseResult.Fail([new ParseError(body.RemainingTokens[0], "Expected ')'", body.RemainingTokens)]) as ParseResult;
                 else 
-                    return new IParseResult.Pass(new ParseSuccess(new ParenthesesNode(body.Node, tokens[0]), [.. body.RemainingTokens.Skip(1)]));
+                    return new ParseResult.Pass(new ParseSuccess(new ParenthesesNode(body.Node, tokens[0]), [.. body.RemainingTokens.Skip(1)]));
             });
         }
 
-        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        public ValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
             if (node is ParenthesesNode parentheses)
             {
                 return ExpressionTree.Validate(parentheses.Body, variables)
-                    .Bind(body => new IValidationResult.Pass(new TypedParenthesesNode(body, body.DataType)));
+                    .Bind(body => new ValidationResult.Pass(new TypedParenthesesNode(body, body.DataType)));
             }
             else return Next.Validate(node, variables);
         }

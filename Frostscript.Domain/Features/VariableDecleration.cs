@@ -2,6 +2,7 @@
 using Frostscript.Domain.Parser;
 using Frostscript.Domain.Types;
 using Frostscript.Domain.Validator;
+using MalFunction.Result;
 
 namespace Frostscript.Domain.Features
 {
@@ -16,15 +17,15 @@ namespace Frostscript.Domain.Features
             }
             else return Next.Interpret(expression, variables);
         }
-        public IParseResult Parse(Token[] tokens)
+        public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
             {
                 if (tokens[1].Type is not TokenType.Label)
-                    return new IParseResult.Fail([new ParseError(tokens[1], "Expected Label", tokens)]);
+                    return new ParseResult.Fail([new ParseError(tokens[1], "Expected Label", tokens)]);
               
                 if (tokens[2].Type is not TokenType.SingleEqual)
-                    return new IParseResult.Fail([new ParseError(tokens[2], "Expected '='", tokens)]);
+                    return new ParseResult.Fail([new ParseError(tokens[2], "Expected '='", tokens)]);
 
                 return Next.Parse([.. tokens.Skip(3)])
                     .Map(value => new ParseSuccess(
@@ -35,7 +36,7 @@ namespace Frostscript.Domain.Features
             else return Next.Parse(tokens);
         }
 
-        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        public ValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
             if (node is VariableNode variable)
             {
@@ -43,7 +44,7 @@ namespace Frostscript.Domain.Features
                     .Bind(value =>
                     {
                         variables[variable.Label] = new VariableData(value.DataType, variable.Mutable);
-                        return new IValidationResult.Pass(new TypedVariableNode(variable.Label, value, variable.Mutable, new VoidType()));
+                        return new ValidationResult.Pass(new TypedVariableNode(variable.Label, value, variable.Mutable, new VoidType()));
                     });
             }
             else return Next.Validate(node, variables);

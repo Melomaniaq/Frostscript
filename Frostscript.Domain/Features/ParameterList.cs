@@ -1,20 +1,17 @@
 ﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Parameters;
 using Frostscript.Domain.Parser;
-using IAnnotationResult = Frostscript.Domain.IResult<
+using MalFunction.Result;
+using AnnotationResult = MalFunction.Result.IResult<
     (Frostscript.Domain.Features.Models.IDataType dataType, Frostscript.Domain.Token[] remainingTokens),
     Frostscript.Domain.Parser.ParseError
->;
-using IParameterListResult = Frostscript.Domain.IResult<
-    Frostscript.Domain.Parameters.ParameterListSuccess,
-    Frostscript.Domain.Parser.ParseError[]
 >;
 
 namespace Frostscript.Domain.Features
 {
     public static class ParameterList
     {
-        public static IParameterListResult Parse(Token[] tokens)
+        public static IResult<ParameterListSuccess, ParseError[]> Parse(Token[] tokens)
         {
             var _tokens = tokens;
 
@@ -33,35 +30,36 @@ namespace Frostscript.Domain.Features
                     var label = _tokens[0].Literal;
                     var annotation = Annotation([.. _tokens.Skip(1)]);
 
-                    if (annotation is IAnnotationResult.Fail fail)
+                    if (annotation is AnnotationResult.Fail fail)
                         _tokens = fail.Value.RemainingTokens;
-                    else if (annotation is IAnnotationResult.Pass pass)
+                    else if (annotation is AnnotationResult.Pass pass)
                         _tokens = pass.Value.remainingTokens;
 
                     yield return annotation.Map(annotation => new Parameter(label, annotation.dataType));
                 }
             }
             return GenerateParameters()
+                .ToArray()
                 .Traverse()
                 .Map(parameterList => new ParameterListSuccess(parameterList, _tokens));
         }
-        static IAnnotationResult Annotation(Token[] tokens)
+        static AnnotationResult Annotation(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.ParenthesesOpen)
             {
                 return FunctionType([.. tokens.Skip(1)]).Bind(annotation =>
                 {
                     if (annotation.remainingTokens[0].Type is not TokenType.ParenthesesClose)
-                        return new IAnnotationResult.Fail(new ParseError(annotation.remainingTokens[0], "Expected ')'", annotation.remainingTokens)) as IAnnotationResult;
+                        return new AnnotationResult.Fail(new ParseError(annotation.remainingTokens[0], "Expected ')'", annotation.remainingTokens)) as AnnotationResult;
                     else 
-                        return new IAnnotationResult.Pass((annotation.dataType, [.. annotation.remainingTokens.Skip(1)]));
+                        return new AnnotationResult.Pass((annotation.dataType, [.. annotation.remainingTokens.Skip(1)]));
 
                 });
             }
-            else return new IAnnotationResult.Pass((new UnknownType(), tokens));
+            else return new AnnotationResult.Pass((new UnknownType(), tokens));
         }
 
-        static IAnnotationResult FunctionType(Token[] tokens)
+        static AnnotationResult FunctionType(Token[] tokens)
         {
             return Type(tokens).Bind(parameter =>
             {
@@ -75,18 +73,18 @@ namespace Frostscript.Domain.Features
                             return (new FunctionType(parameter.dataType, body.dataType), body.remainingTokens);
                     });
                 }
-                else return new IAnnotationResult.Pass(parameter);
+                else return new AnnotationResult.Pass(parameter);
             });
         }
 
-        static IAnnotationResult Type(Token[] tokens)
+        static AnnotationResult Type(Token[] tokens)
         {
             return tokens[0].Type switch
             {
-                TokenType.Num => new IAnnotationResult.Pass((new NumberType(), [.. tokens.Skip(1)])),
-                TokenType.Str => new IAnnotationResult.Pass((new StringType(), [.. tokens.Skip(1)])),
-                TokenType.Bool => new IAnnotationResult.Pass((new BoolType(), [.. tokens.Skip(1)])),
-                _ => new IAnnotationResult.Fail(new ParseError(tokens[0], "Expected type after '('", tokens))
+                TokenType.Num => new AnnotationResult.Pass((new NumberType(), [.. tokens.Skip(1)])),
+                TokenType.Str => new AnnotationResult.Pass((new StringType(), [.. tokens.Skip(1)])),
+                TokenType.Bool => new AnnotationResult.Pass((new BoolType(), [.. tokens.Skip(1)])),
+                _ => new AnnotationResult.Fail(new ParseError(tokens[0], "Expected type after '('", tokens))
             };
         }
     }

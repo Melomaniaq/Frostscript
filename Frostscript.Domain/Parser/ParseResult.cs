@@ -1,6 +1,6 @@
 ﻿
-global using IParseResult = 
-    Frostscript.Domain.IResult<
+global using ParseResult = 
+    MalFunction.Result.IResult<
         Frostscript.Domain.Parser.ParseSuccess,
         Frostscript.Domain.Parser.ParseError[]
     >;

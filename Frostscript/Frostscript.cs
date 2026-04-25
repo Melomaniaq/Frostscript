@@ -1,7 +1,7 @@
-﻿using Frostscript.Domain;
-using Frostscript.Domain.Features.Models;
+﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Validator;
 using Frostware.Pipe;
+using MalFunction.Result;
 
 namespace Frostscript
 {
@@ -12,9 +12,9 @@ namespace Frostscript
             var validationResult = 
                 Lexer.Lex(frostscript)
                 .Pipe(Parser.Parse)
-                .MapFailure(errors => errors.Select(error => new ValidationError (error.Token, error.Message)).ToArray())
+                .MapFail(errors => errors.Select(error => new ValidationError (error.Token, error.Message)).ToArray())
                 .Bind(Validator.Validate)
-                .MapFailure(x =>
+                .MapFail(x =>
                     x.Aggregate("", (errorMessage, newError) => errorMessage + $"[{newError.Token.Line}:{newError.Token.Character}] {newError.Error} \n")
                 );
 

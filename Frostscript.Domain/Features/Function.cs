@@ -2,6 +2,7 @@
 using Frostscript.Domain.Parser;
 using Frostscript.Domain.Types;
 using Frostscript.Domain.Validator;
+using MalFunction.Result;
 
 namespace Frostscript.Domain.Features
 {
@@ -25,7 +26,7 @@ namespace Frostscript.Domain.Features
             else return Next.Interpret(expression, variables);
         }
 
-        public IParseResult Parse(Token[] tokens)
+        public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.Fun)
                 return Next.Parse(tokens);
@@ -33,7 +34,7 @@ namespace Frostscript.Domain.Features
             return ParameterList.Parse([.. tokens.Skip(1)]).Bind(parameterList =>
             {
                 if (parameterList.RemainingTokens[0].Type is not TokenType.Arrow)
-                    return new IParseResult.Fail([new ParseError(parameterList.RemainingTokens[0], "Expected '->' ", parameterList.RemainingTokens)]);
+                    return new ParseResult.Fail([new ParseError(parameterList.RemainingTokens[0], "Expected '->' ", parameterList.RemainingTokens)]);
 
                 return ExpressionTree.Parse([.. parameterList.RemainingTokens.Skip(1)]).Map(body =>
                     new ParseSuccess(new FunctionNode(parameterList.Parameters, body.Node, tokens[0]), body.RemainingTokens)
@@ -41,7 +42,7 @@ namespace Frostscript.Domain.Features
             });
         }
 
-        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        public ValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
             if (node is FunctionNode function)
             {

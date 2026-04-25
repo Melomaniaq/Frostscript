@@ -4,8 +4,8 @@ using Frostscript.Domain.Features;
 using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Validator;
 using Xunit;
-using IValidationResult =
-    Frostscript.Domain.IResult<
+using ValidationResult =
+    MalFunction.Result.IResult<
         Frostscript.Domain.Features.Models.ITypedNode,
         Frostscript.Domain.Validator.ValidationError
     >;
@@ -40,7 +40,7 @@ namespace Frostscript.Tests
                 _ => throw new NotSupportedException()
             };
 
-            var expected = new IValidationResult.Pass(new TypedLiteralNode(value, dataType));
+            var expected = new ValidationResult.Pass(new TypedLiteralNode(value, dataType));
 
             Assert.Equal(expected, expression.Validate(node, new Dictionary<string, VariableData>()));
         }
@@ -61,7 +61,7 @@ namespace Frostscript.Tests
             );
             var expression = new Binary(binaryType, new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedBinaryNode(
                     binaryType,
                     new TypedLiteralNode(left, new NumberType()),
@@ -84,7 +84,7 @@ namespace Frostscript.Tests
             );
             var expression = new Binary(BinaryType.Addition, new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedBinaryNode(
                     BinaryType.Addition,
                     new TypedLiteralNode("hello ", new StringType()),
@@ -118,7 +118,7 @@ namespace Frostscript.Tests
            );
             var expression = new Binary(binaryType, new Literal());
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, new Dictionary<string, VariableData>()));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, new Dictionary<string, VariableData>()));
         }
 
         [Theory]
@@ -150,7 +150,7 @@ namespace Frostscript.Tests
             );
             var expression = new Binary(binaryType, new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedBinaryNode(
                     binaryType,
                     new TypedLiteralNode(left, new NumberType()),
@@ -181,7 +181,7 @@ namespace Frostscript.Tests
             );
             var expression = new Binary(binaryType, new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedBinaryNode(
                     binaryType,
                     new TypedLiteralNode(left, new BoolType()),
@@ -199,7 +199,7 @@ namespace Frostscript.Tests
             var node = new VariableNode("myVariable", new LiteralNode(1, new ()), true, new ());
             var expression = new VariableDecleration(new Literal());
 
-            var expected = new IValidationResult.Pass(new TypedVariableNode("myVariable", new TypedLiteralNode(1, new NumberType()), true, new VoidType()));
+            var expected = new ValidationResult.Pass(new TypedVariableNode("myVariable", new TypedLiteralNode(1, new NumberType()), true, new VoidType()));
             
             Assert.Equal(expected, expression.Validate(node, new Dictionary<string, VariableData>()));
         }
@@ -211,7 +211,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), true) } };
             var expression = new Label(new Literal());
 
-            var expected = new IValidationResult.Pass(new TypedLabelNode("hello", new NumberType()));
+            var expected = new ValidationResult.Pass(new TypedLabelNode("hello", new NumberType()));
 
             Assert.Equal(expected, expression.Validate(node, variables));
         }
@@ -223,7 +223,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData>();
             var expression = new Label(new Literal());
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), true) } };
             var expression = new Assignment(new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedAssignmentNode(
                     "hello", 
                     new TypedLiteralNode(2, new NumberType()), 
@@ -251,7 +251,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), false) } };
             var expression = new Assignment(new Literal());
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -261,7 +261,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData>();
             var expression = new Assignment(new Literal());
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData> { { "hello", new(new NumberType(), true) } };
             var expression = new Assignment(new Literal());
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -286,7 +286,7 @@ namespace Frostscript.Tests
             var variables = new Dictionary<string, VariableData> { { "variable", new(new NumberType(), false) } };
             var expression = new Function(new Literal());
 
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedFunctionNode(
                     [new ("parameter1", new NumberType()), new ("parameter2", new NumberType())],
                     new TypedLiteralNode(1, new NumberType()),
@@ -314,7 +314,7 @@ namespace Frostscript.Tests
                 new()
             );
             var expression = new Call(new Function(new Literal()));
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedCallNode(
                     new TypedFunctionNode(
                         [new ("parameter1", new NumberType())],
@@ -343,7 +343,7 @@ namespace Frostscript.Tests
             );
             var expression = new Call(new Function(new Literal()));
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -357,7 +357,7 @@ namespace Frostscript.Tests
             );
             var expression = new Call(new Function(new Literal()));
 
-            Assert.IsType<IValidationResult.Fail>(expression.Validate(node, variables));
+            Assert.IsType<ValidationResult.Fail>(expression.Validate(node, variables));
         }
 
         [Fact]
@@ -365,7 +365,7 @@ namespace Frostscript.Tests
         {
             var node = new ParenthesesNode(new LiteralNode(1, new()), new());
             var expression = new Parentheses(new Literal());
-            var expected = new IValidationResult.Pass(
+            var expected = new ValidationResult.Pass(
                 new TypedParenthesesNode(
                     new TypedLiteralNode(1, new NumberType()), 
                     new NumberType()

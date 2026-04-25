@@ -11,14 +11,14 @@ namespace Frostscript.Domain.Features
             if (expression is LiteralExpression literal) return literal.Value;
             else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
         }
-        public IParseResult Parse(Token[] tokens)
+        public ParseResult Parse(Token[] tokens)
         {
-            if (tokens[0].Type == TokenType.Literal) return new IParseResult.Pass(new (
+            if (tokens[0].Type == TokenType.Literal) return new ParseResult.Pass(new (
                 new LiteralNode(tokens[0].Literal, tokens[0]),
                 [.. tokens.Skip(1)]
             ));
 
-            else return new IParseResult.Fail([
+            else return new ParseResult.Fail([
                 new ParseError(
                     tokens[0],
                     $"Unexpected token {tokens[0].Literal}",
@@ -27,7 +27,7 @@ namespace Frostscript.Domain.Features
             );
         }
 
-        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        public ValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
             if (node is LiteralNode literal)
             {
@@ -39,9 +39,9 @@ namespace Frostscript.Domain.Features
                     _ => throw new NotSupportedException()
                 };
 
-                return new IValidationResult.Pass(new TypedLiteralNode(literal.Value, dataType));
+                return new ValidationResult.Pass(new TypedLiteralNode(literal.Value, dataType));
             }
-            if (node is ErrorNode error) return new IValidationResult.Fail(new (error.Token, error.Error));
+            if (node is ErrorNode error) return new ValidationResult.Fail(new (error.Token, error.Error));
             else throw new NotImplementedException("Node could not be resolved. Did you forget to add the expression to the expression tree?");
         }
     }

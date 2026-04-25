@@ -1,6 +1,7 @@
 ﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Parser;
 using Frostscript.Domain.Validator;
+using MalFunction.Result;
 
 namespace Frostscript.Domain.Features
 {
@@ -48,7 +49,7 @@ namespace Frostscript.Domain.Features
             else return next.Interpret(expression, variables);
         }
 
-        public IParseResult Parse(Token[] tokens)
+        public ParseResult Parse(Token[] tokens)
         {
             return next.Parse(tokens)
                 .Bind(left =>
@@ -61,11 +62,11 @@ namespace Frostscript.Domain.Features
                                 right.RemainingTokens)
                             );
                     }
-                    else return new IParseResult.Pass(left);
+                    else return new ParseResult.Pass(left);
                 });
         }
 
-        public IValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
+        public ValidationResult Validate(INode node, IDictionary<string, VariableData> variables)
         {
             if (node is BinaryNode binary)
             {
@@ -81,8 +82,8 @@ namespace Frostscript.Domain.Features
                                 BinaryType.Multiplication or
                                 BinaryType.Division => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())) as IValidationResult,
-                                    _ => new IValidationResult.Fail(new (
+                                    (NumberType, NumberType) => new ValidationResult.Pass(BinaryOFType(new NumberType())) as ValidationResult,
+                                    _ => new ValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be used with types {left.DataType} and {right.DataType}"
                                     )),
@@ -92,26 +93,26 @@ namespace Frostscript.Domain.Features
                                 BinaryType.GreaterOrEqual or
                                 BinaryType.GreaterThan => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail(new (
+                                    (NumberType, NumberType) => new ValidationResult.Pass(BinaryOFType(new BoolType())),
+                                    _ => new ValidationResult.Fail(new (
                                         binary.Token,
                                         $"Operator {binary.Type} cannot be use with types {left.DataType} and {right.DataType}"
                                     )),
                                 },
                                 BinaryType.Addition => (left.DataType, right.DataType) switch
                                 {
-                                    (NumberType, NumberType) => new IValidationResult.Pass(BinaryOFType(new NumberType())),
-                                    (StringType, StringType) => new IValidationResult.Pass(BinaryOFType(new StringType())),
-                                    _ => new IValidationResult.Fail(new (
+                                    (NumberType, NumberType) => new ValidationResult.Pass(BinaryOFType(new NumberType())),
+                                    (StringType, StringType) => new ValidationResult.Pass(BinaryOFType(new StringType())),
+                                    _ => new ValidationResult.Fail(new (
                                         binary.Token,
                                        $"type {left.DataType} cannot be additioned with type {right.DataType}"
                                     )),
                                 },
-                                BinaryType.Equality or BinaryType.Inequality => new IValidationResult.Pass(new TypedBinaryNode(binary.Type, left, right, new BoolType())),
+                                BinaryType.Equality or BinaryType.Inequality => new ValidationResult.Pass(new TypedBinaryNode(binary.Type, left, right, new BoolType())),
                                 BinaryType.And or BinaryType.Or => (left.DataType, right.DataType) switch
                                 {
-                                    (BoolType, BoolType) => new IValidationResult.Pass(BinaryOFType(new BoolType())),
-                                    _ => new IValidationResult.Fail(new (
+                                    (BoolType, BoolType) => new ValidationResult.Pass(BinaryOFType(new BoolType())),
+                                    _ => new ValidationResult.Fail(new (
                                         binary.Token,
                                         $"Both sides of {binary.Type} must be a Bool. {left.DataType} and {right.DataType} where given"
                                     )),
