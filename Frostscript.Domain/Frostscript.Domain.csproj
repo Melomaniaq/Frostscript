@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Frostware.Pipe" Version="1.0.0" />
+    <PackageReference Include="MalFunction.Pipe" Version="1.0.0" />
     <PackageReference Include="MalFunction.Result" Version="1.0.0" />
   </ItemGroup>
 	

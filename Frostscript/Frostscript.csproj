@@ -11,7 +11,11 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\Frostscript.Domain\Frostscript.Domain.csproj" />
-	<InternalsVisibleTo Include="Frostscript.Tests"/>
+	<InternalsVisibleTo Include="Frostscript.Tests" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="MalFunction.Pipe" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

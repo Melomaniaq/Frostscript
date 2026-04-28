@@ -40,7 +40,7 @@ namespace Frostscript.Domain.Features
             }
             return GenerateParameters()
                 .ToArray()
-                .Traverse()
+                .Sequence()
                 .Map(parameterList => new ParameterListSuccess(parameterList, _tokens));
         }
         static AnnotationResult Annotation(Token[] tokens)
