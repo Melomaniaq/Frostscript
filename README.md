@@ -1,5 +1,5 @@
 # FrostScript
-A custominterpreted language for study and fun
+A custom interpreted language for study and fun
 
 # Table of Contents
 - [Introduction](#introduction)
