@@ -23,32 +23,6 @@ namespace Frostscript.Domain.Features
             { BinaryType.Or, TokenType.Or },
         };
       
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is BinaryExpression binary)
-            {
-                var left = next.Interpret(binary.Left, variables);
-                var right = next.Interpret(binary.Right, variables);
-
-                return binary.Type switch 
-                { 
-                    BinaryType.Addition => left + right,
-                    BinaryType.Subtraction => left - right,
-                    BinaryType.Multiplication => left * right,
-                    BinaryType.Division => left / right,
-                    BinaryType.Equality => left == right,
-                    BinaryType.Inequality => left != right,
-                    BinaryType.GreaterThan => left > right,
-                    BinaryType.GreaterOrEqual => left >= right,
-                    BinaryType.LessThan => left < right,
-                    BinaryType.LessOrEqual => left <= right,
-                    BinaryType.And => left && right,
-                    BinaryType.Or => left || right,
-                };
-            }
-            else return next.Interpret(expression, variables);
-        }
-
         public ParseResult Parse(Token[] tokens)
         {
             return next.Parse(tokens)

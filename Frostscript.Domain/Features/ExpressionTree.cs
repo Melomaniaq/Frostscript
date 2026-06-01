@@ -28,6 +28,5 @@ namespace Frostscript.Domain.Features
 
         public static ValidationResult Validate(INode node, IDictionary<string, VariableData> variables) => expressionTree.Validate(node, variables);
         public static ParseResult Parse(Token[] tokens) => expressionTree.Parse(tokens);
-        public static dynamic Interpret(IExpression expression, IDictionary<string, dynamic> variables) => expressionTree.Interpret(expression, variables);
     }
 }

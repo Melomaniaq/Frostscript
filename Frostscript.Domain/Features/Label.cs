@@ -5,14 +5,6 @@ namespace Frostscript.Domain.Features
 {
     public class Label(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is LabelExpression label) 
-                return variables[label.Label];
-            else 
-                return Next.Interpret(expression, variables);
-        }
-
         public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Label) 

@@ -6,11 +6,6 @@ namespace Frostscript.Domain.Features
 {
     public class Literal : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is LiteralExpression literal) return literal.Value;
-            else throw new NotImplementedException("Node Could not be resolved. Did you forget to add the expression to the expression tree?");
-        }
         public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type == TokenType.Literal) return new ParseResult.Pass(new (

@@ -1,5 +1,4 @@
 ﻿using Frostscript.Domain.Features.Models;
-using Frostscript.Domain.Types;
 using Frostscript.Domain.Validator;
 using MalFunction.Result;
 
@@ -7,19 +6,6 @@ namespace Frostscript.Domain.Features
 {
     public class Call(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is CallExpression call)
-            {
-                var left = (ICallable)Next.Interpret(call.Left, variables);
-                var right = Next.Interpret(call.Right, variables);
-
-                return left.Call(right);
-            }
-
-            return Next.Interpret(expression, variables);
-        }
-
         public ParseResult Parse(Token[] tokens)
         {
             return Next.Parse(tokens).Bind(left =>

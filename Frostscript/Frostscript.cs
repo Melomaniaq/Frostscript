@@ -5,9 +5,9 @@ using MalFunction.Result;
 
 namespace Frostscript
 {
-    public static class Frostscript
+    public class Frostscript(IInterpreter interpreter)
     {
-        public static T Run<T>(string frostscript)
+        public void Run(string frostscript)
         {
             var validationResult = 
                 Lexer.Lex(frostscript)
@@ -18,15 +18,14 @@ namespace Frostscript
                     x.Aggregate("", (errorMessage, newError) => errorMessage + $"[{newError.Token.Line}:{newError.Token.Character}] {newError.Error} \n")
                 );
 
-            return validationResult switch
-            {
-                IResult<IExpression[], string>.Pass pass => pass.Value
-                    .Pipe(Interpreter.Interpret<T>),
-                IResult<IExpression[], string>.Fail fail => throw new FrostscriptException(fail.Value),
-                _ => throw new Exception("Invalid result type")
-            };
-        }
+            if (validationResult is IResult<IExpression[], string>.Pass pass)
+                pass.Value.Pipe(interpreter.Interpret);
 
-        public static void Run(string frostscript) => Run<object>(frostscript);
+            else if (validationResult is IResult<IExpression[], string>.Fail fail)
+                throw new FrostscriptException(fail.Value);
+
+            else 
+                throw new Exception("Invalid result type");
+        }
     }
 }

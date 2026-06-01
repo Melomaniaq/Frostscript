@@ -1,6 +1,5 @@
 ﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Parser;
-using Frostscript.Domain.Types;
 using Frostscript.Domain.Validator;
 using MalFunction.Result;
 
@@ -8,24 +7,6 @@ namespace Frostscript.Domain.Features
 {
     public class Function(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is FunctionExpression function) 
-                return function.Parameters
-                .Reverse()
-                .Skip(1)
-                .Aggregate(
-                    new FSFunction(function.Parameters.Last(), function.Body, new Closure<string, object>(variables)),
-                    (frostFunc, parameter) => new FSFunction(
-                        parameter, 
-                        new LiteralExpression(frostFunc), 
-                        frostFunc.Closure
-                    )
-                );
-
-            else return Next.Interpret(expression, variables);
-        }
-
         public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is not TokenType.Fun)

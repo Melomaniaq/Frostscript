@@ -1,6 +1,5 @@
 ﻿using Frostscript.Domain.Features.Models;
 using Frostscript.Domain.Parser;
-using Frostscript.Domain.Types;
 using Frostscript.Domain.Validator;
 using MalFunction.Result;
 
@@ -8,15 +7,6 @@ namespace Frostscript.Domain.Features
 {
     public class VariableDecleration(IFeature Next) : IFeature
     {
-        public dynamic Interpret(IExpression expression, IDictionary<string, object> variables)
-        {
-            if (expression is VariableExpression variable)
-            {
-                variables[variable.Label] = Next.Interpret(variable.Value, variables);
-                return new FSVoid();
-            }
-            else return Next.Interpret(expression, variables);
-        }
         public ParseResult Parse(Token[] tokens)
         {
             if (tokens[0].Type is TokenType.Let or TokenType.Var)
